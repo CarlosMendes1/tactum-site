@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import {
   PawPrint, Sparkles, ShoppingBag, ArrowRight, Heart, Circle, Bone, Check,
+  Menu, X, Plus, Truck, Leaf, Gem, Instagram, Mail,
 } from "lucide-react";
 
 const BRAND = "tactum studio";
@@ -10,10 +11,17 @@ const BRAND = "tactum studio";
 const CLAY_DOTS = ["#C1633B", "#8A9A7E", "#E3A9A0", "#E8B04B", "#B08D57", "#4A463D"];
 
 const EARRINGS = [
-  { name: "Argola Terra", price: "18€", bg: "linear-gradient(160deg,#E9DFCB,#C9B48C)" },
-  { name: "Gota Sálvia", price: "16€", bg: "linear-gradient(160deg,#DCE4D4,#8A9A7E)" },
-  { name: "Lua Creme", price: "14€", bg: "linear-gradient(160deg,#F2ECDD,#D6C9A8)" },
-  { name: "Botão Terracota", price: "12€", bg: "linear-gradient(160deg,#E8C3AE,#C1633B)" },
+  { name: "Argola Terra", price: 18, bg: "linear-gradient(160deg,#E9DFCB,#C9B48C)", isNew: true },
+  { name: "Gota Sálvia", price: 16, bg: "linear-gradient(160deg,#DCE4D4,#8A9A7E)" },
+  { name: "Lua Creme", price: 14, bg: "linear-gradient(160deg,#F2ECDD,#D6C9A8)" },
+  { name: "Botão Terracota", price: 12, bg: "linear-gradient(160deg,#E8C3AE,#C1633B)" },
+];
+
+const FEATURES = [
+  { icon: Gem, title: "Feito à mão", desc: "Cada peça moldada e cozida artesanalmente." },
+  { icon: Leaf, title: "Argila natural", desc: "Materiais simples, sem plásticos desnecessários." },
+  { icon: Sparkles, title: "Peça única", desc: "Nunca dois brincos exatamente iguais." },
+  { icon: Truck, title: "Envio cuidado", desc: "Embalado com cuidado, direto de Portugal." },
 ];
 
 const CLAY_COLORS = [
@@ -50,68 +58,110 @@ const SIZES = [
 ];
 
 const FONTS = [
-  { id: "serif", label: "Clássica", family: "Georgia, 'Iowan Old Style', serif" },
+  { id: "serif", label: "Clássica", family: "var(--font-display)" },
   { id: "redonda", label: "Arredondada", family: "'Trebuchet MS', 'Segoe UI', sans-serif" },
 ];
 
 const BASE_PRICE = 8.5;
+const STEPS = [
+  { n: "01", t: "Escolhe", d: "Forma, cor de argila e tipo de letra no customizador." },
+  { n: "02", t: "Personaliza", d: "Escreve o nome do animal e, se quiseres, um contacto." },
+  { n: "03", t: "Recebe em casa", d: "Moldamos e cozemos a peça e enviamos em poucos dias." },
+];
+
+const formatPrice = (n) => `${n.toFixed(2)}€`;
 
 export default function TactumStudioSite() {
   const [area, setArea] = useState("brincos");
   const isBrincos = area === "brincos";
 
   return (
-    <div style={{ fontFamily: "'Trebuchet MS','Segoe UI',sans-serif", background: "#F3EEE2", minHeight: "100vh", color: "#2E2B26" }}>
-      <style>{`
-        .grid4 { display:grid; grid-template-columns: repeat(4,1fr); gap:18px; }
-        .grid3 { display:grid; grid-template-columns: repeat(3,1fr); gap:18px; }
-        .grid2 { display:grid; grid-template-columns: minmax(220px,340px) 1fr; gap:36px; }
-        @media (max-width: 760px) {
-          .grid4 { grid-template-columns: repeat(2,1fr); }
-          .grid3 { grid-template-columns: 1fr; }
-          .grid2 { grid-template-columns: 1fr; }
-          .hero-title { font-size: 32px !important; }
-        }
-        .tab-btn { position:relative; background:none; border:none; cursor:pointer; font-size:14px; font-weight:700; letter-spacing:0.04em; padding:8px 4px; }
-        .card:hover { transform: translateY(-3px); }
-        .shape-btn:hover, .size-btn:hover, .font-btn:hover { border-color:#5C6B4A; }
-        .swatch:hover { transform: translateY(-2px); }
-        .preview-hang:hover .preview-tag { transform: rotate(3deg); }
-      `}</style>
+    <div className="site">
+      <GlobalStyle />
+      <a href="#conteudo" className="skip-link">Saltar para o conteúdo</a>
 
-      {/* NAV */}
-      <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 32px", borderBottom: "1px solid #DCD3BF" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ width: 28, height: 28, borderRadius: "50%", background: "conic-gradient(#C1633B,#8A9A7E,#E3A9A0,#E8B04B,#B08D57,#C1633B)" }} />
-          <span style={{ fontFamily: "Georgia,serif", fontSize: 18, fontWeight: 700 }}>{BRAND}</span>
+      <Header area={area} onChangeArea={setArea} />
+      <MaterialStrip />
+
+      <main id="conteudo">
+        {isBrincos ? <BrincosArea onSeePets={() => setArea("pets")} /> : <PetsArea />}
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
+
+function Header({ area, onChangeArea }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const isBrincos = area === "brincos";
+
+  const go = (id) => {
+    onChangeArea(id);
+    setMenuOpen(false);
+  };
+
+  return (
+    <header className="site-header">
+      <div className="header-inner">
+        <div className="brand">
+          <span className="brand-dot" aria-hidden="true" />
+          <span className="brand-name">{BRAND}</span>
         </div>
 
-        <nav style={{ display: "flex", gap: 28 }}>
-          <button className="tab-btn" onClick={() => setArea("brincos")}>
-            <span style={{ color: isBrincos ? "#2E2B26" : "#A79E8A" }}>BRINCOS</span>
-            {isBrincos && <div style={{ position: "absolute", left: 0, right: 0, bottom: -9, height: 2, background: "#B08D57" }} />}
+        <nav className="nav-desktop" aria-label="Áreas da loja">
+          <button
+            className="tab-btn"
+            aria-current={isBrincos ? "page" : undefined}
+            onClick={() => go("brincos")}
+          >
+            <span style={{ color: isBrincos ? "var(--color-ink)" : "var(--color-faint)" }}>Brincos</span>
+            {isBrincos && <span className="tab-underline" style={{ background: "var(--color-gold)" }} />}
           </button>
-          <button className="tab-btn" onClick={() => setArea("pets")}>
-            <span style={{ color: !isBrincos ? "#2E2B26" : "#A79E8A" }}>PETS</span>
-            {!isBrincos && <div style={{ position: "absolute", left: 0, right: 0, bottom: -9, height: 2, background: "#C1633B" }} />}
+          <button
+            className="tab-btn"
+            aria-current={!isBrincos ? "page" : undefined}
+            onClick={() => go("pets")}
+          >
+            <span style={{ color: !isBrincos ? "var(--color-ink)" : "var(--color-faint)" }}>Pets</span>
+            {!isBrincos && <span className="tab-underline" style={{ background: "var(--color-terracotta)" }} />}
           </button>
         </nav>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700 }}>
-          <ShoppingBag size={16} /> 0
+        <div className="header-actions">
+          <div className="icon-btn" aria-label="Carrinho de compras, 0 artigos" role="img">
+            <ShoppingBag size={18} />
+            <span className="cart-count">0</span>
+          </div>
+          <button
+            className="icon-btn nav-toggle"
+            aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((o) => !o)}
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
-      </header>
-
-      {/* material strip */}
-      <div style={{ display: "flex", justifyContent: "center", gap: 8, padding: "10px 0", background: "#EDE7D6" }}>
-        {CLAY_DOTS.map((c) => <div key={c} style={{ width: 8, height: 8, borderRadius: "50%", background: c }} />)}
       </div>
 
-      {isBrincos ? <BrincosArea onSeePets={() => setArea("pets")} /> : <PetsArea />}
+      {menuOpen && (
+        <nav className="nav-mobile" aria-label="Áreas da loja (menu)">
+          <button className={`nav-mobile-link ${isBrincos ? "active" : ""}`} onClick={() => go("brincos")}>
+            Brincos
+          </button>
+          <button className={`nav-mobile-link ${!isBrincos ? "active" : ""}`} onClick={() => go("pets")}>
+            Pets
+          </button>
+        </nav>
+      )}
+    </header>
+  );
+}
 
-      <footer style={{ padding: "26px 32px", textAlign: "center", fontSize: 12, color: "#A79E8A", borderTop: "1px solid #DCD3BF" }}>
-        {BRAND} — brincos & chapinhas de argila, feitos à mão em Portugal
-      </footer>
+function MaterialStrip() {
+  return (
+    <div className="material-strip" aria-hidden="true">
+      {CLAY_DOTS.map((c) => <span key={c} className="material-dot" style={{ background: c }} />)}
     </div>
   );
 }
@@ -119,49 +169,76 @@ export default function TactumStudioSite() {
 function BrincosArea({ onSeePets }) {
   return (
     <>
-      <section style={{ background: "#262220", color: "#F3EEE2", padding: "80px 32px 90px", textAlign: "center" }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, letterSpacing: "0.14em", color: "#B08D57", marginBottom: 18 }}>
+      <section className="hero hero-dark">
+        <div className="hero-badge">
           <Sparkles size={14} /> COLEÇÃO ATUAL
         </div>
-        <h1 className="hero-title" style={{ fontFamily: "Georgia,serif", fontSize: 46, maxWidth: 620, margin: "0 auto 16px", lineHeight: 1.15 }}>
-          Peças de argila moldadas à mão, uma a uma
-        </h1>
-        <p style={{ maxWidth: 420, margin: "0 auto 30px", color: "#C9C0AE", fontSize: 15, lineHeight: 1.6 }}>
+        <h1 className="hero-title">Peças de argila moldadas à mão, uma a uma</h1>
+        <p className="hero-sub">
           Cada par de brincos nasce do barro e do forno — nunca dois exatamente iguais.
         </p>
-        <button style={{ background: "#B08D57", color: "#262220", border: "none", padding: "13px 26px", borderRadius: 10, fontWeight: 700, fontSize: 14, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 8 }}>
-          Ver coleção <ArrowRight size={15} />
-        </button>
-      </section>
-
-      <section style={{ padding: "56px 32px", maxWidth: 1000, margin: "0 auto" }}>
-        <h2 style={{ fontFamily: "Georgia,serif", fontSize: 22, marginBottom: 24 }}>Mais recentes</h2>
-        <div className="grid4">
-          {EARRINGS.map((e) => (
-            <div key={e.name} className="card" style={{ transition: "transform 0.2s" }}>
-              <div style={{ background: e.bg, borderRadius: 14, aspectRatio: "1", marginBottom: 10 }} />
-              <div style={{ fontSize: 13, fontWeight: 700 }}>{e.name}</div>
-              <div style={{ fontSize: 13, color: "#8A8574" }}>{e.price}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section style={{ background: "#EDEEE0", padding: "48px 32px" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <PawPrint size={22} color="#5C6B4A" />
-            <div>
-              <div style={{ fontWeight: 700, fontSize: 15 }}>Também fazemos chapinhas para colares</div>
-              <div style={{ fontSize: 13, color: "#6B675C" }}>Mesmo barro, agora para o teu animal.</div>
-            </div>
-          </div>
-          <button onClick={onSeePets} style={{ background: "none", border: "1.5px solid #5C6B4A", color: "#5C6B4A", padding: "9px 18px", borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+        <div className="hero-actions">
+          <a href="#colecao" className="btn btn-primary">
+            Ver coleção <ArrowRight size={15} />
+          </a>
+          <button onClick={onSeePets} className="btn btn-ghost-dark">
             Ver área Pets
           </button>
         </div>
       </section>
+
+      <section className="features-grid">
+        {FEATURES.map((f) => (
+          <div key={f.title} className="feature-item">
+            <div className="feature-icon"><f.icon size={18} /></div>
+            <div>
+              <div className="feature-title">{f.title}</div>
+              <div className="feature-desc">{f.desc}</div>
+            </div>
+          </div>
+        ))}
+      </section>
+
+      <section id="colecao" className="section-narrow">
+        <div className="section-head">
+          <h2 className="section-title">Mais recentes</h2>
+          <span className="section-count">{EARRINGS.length} peças</span>
+        </div>
+        <div className="grid4">
+          {EARRINGS.map((e) => <ProductCard key={e.name} item={e} />)}
+        </div>
+      </section>
+
+      <section className="cross-sell">
+        <div className="cross-sell-inner">
+          <div className="cross-sell-info">
+            <div className="cross-sell-icon"><PawPrint size={22} /></div>
+            <div>
+              <div className="cross-sell-title">Também fazemos chapinhas para colares</div>
+              <div className="cross-sell-desc">Mesmo barro, agora para o teu animal.</div>
+            </div>
+          </div>
+          <button onClick={onSeePets} className="btn btn-outline-sage">
+            Ver área Pets <ArrowRight size={15} />
+          </button>
+        </div>
+      </section>
     </>
+  );
+}
+
+function ProductCard({ item }) {
+  return (
+    <article className="product-card">
+      <div className="product-image" style={{ background: item.bg }}>
+        {item.isNew && <span className="badge">Novo</span>}
+        <button className="quick-add" aria-label={`Adicionar ${item.name} ao carrinho`}>
+          <Plus size={16} />
+        </button>
+      </div>
+      <div className="product-name">{item.name}</div>
+      <div className="product-price">{formatPrice(item.price)}</div>
+    </article>
   );
 }
 
@@ -174,64 +251,69 @@ function PetsArea() {
   const [line2, setLine2] = useState("");
   const [qty, setQty] = useState(1);
   const [submitted, setSubmitted] = useState(false);
+  const [showNameError, setShowNameError] = useState(false);
 
   const shape = SHAPES[shapeId];
   const color = CLAY_COLORS.find((c) => c.id === colorId);
   const size = SIZES.find((s) => s.id === sizeId);
   const font = FONTS.find((f) => f.id === fontId);
   const textColor = ["creme", "manteiga", "argila-rosa"].includes(colorId) ? "#3D3A34" : "#F7F2E7";
+  const nameValid = line1.trim().length > 0;
 
   const price = useMemo(() => {
     let p = BASE_PRICE * size.mult;
     if (line2.trim().length > 0) p += 1;
-    return (p * qty).toFixed(2);
+    return p * qty;
   }, [size, line2, qty]);
+
+  const handleSubmit = () => {
+    if (!nameValid) {
+      setShowNameError(true);
+      return;
+    }
+    setSubmitted(true);
+  };
 
   return (
     <>
-      <section style={{ background: "#F7F2E7", padding: "56px 32px 30px", textAlign: "center" }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, letterSpacing: "0.14em", color: "#5C6B4A", marginBottom: 14, fontWeight: 700 }}>
+      <section className="hero hero-light">
+        <div className="hero-badge hero-badge-sage">
           <PawPrint size={14} /> NOVA LINHA
         </div>
-        <h1 className="hero-title" style={{ fontFamily: "Georgia,serif", fontSize: 34, lineHeight: 1.15, margin: "0 auto 10px", maxWidth: 560 }}>
-          Uma chapinha de argila para o teu companheiro
-        </h1>
-        <p style={{ fontSize: 14, color: "#6B675C", lineHeight: 1.6, maxWidth: 440, margin: "0 auto" }}>
+        <h1 className="hero-title hero-title-sm">Uma chapinha de argila para o teu companheiro</h1>
+        <p className="hero-sub hero-sub-light">
           Personaliza abaixo. Moldamos, gravamos e cozemos cada peça à mão, do mesmo barro dos nossos brincos.
         </p>
       </section>
 
-      {/* CUSTOMIZER */}
-      <section style={{ padding: "20px 32px 60px", maxWidth: 900, margin: "0 auto" }}>
+      <section className="section-medium customizer-section">
         {submitted ? (
-          <div style={{ maxWidth: 420, margin: "40px auto", background: "#F7F2E7", borderRadius: 20, padding: "40px 32px", textAlign: "center", boxShadow: "inset 0 0 0 1px #DFD6C1" }}>
-            <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#5C6B4A", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 18px" }}>
-              <Check size={28} color="#EFE7D4" strokeWidth={3} />
-            </div>
-            <h2 style={{ fontFamily: "Georgia,serif", fontSize: 22, margin: "0 0 10px" }}>Pedido enviado</h2>
-            <p style={{ fontSize: 14, color: "#6B675C", lineHeight: 1.5, margin: "0 0 22px" }}>
-              Recebemos o teu pedido de {qty}× chapinha "{line1 || "—"}". Vamos confirmar contigo por Instagram antes do envio.
+          <div className="success-card">
+            <div className="success-icon"><Check size={28} color="#EFE7D4" strokeWidth={3} /></div>
+            <h2 className="success-title">Pedido enviado</h2>
+            <p className="success-text">
+              Recebemos o teu pedido de {qty}× chapinha "{line1}". Vamos confirmar contigo por Instagram antes do envio.
             </p>
-            <button
-              onClick={() => setSubmitted(false)}
-              style={{ border: "1.5px solid #5C6B4A", background: "none", color: "#5C6B4A", borderRadius: 10, padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
-            >
+            <button onClick={() => setSubmitted(false)} className="btn btn-outline-sage">
               Fazer outro pedido
             </button>
           </div>
         ) : (
           <div className="grid2">
-            {/* preview */}
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", position: "sticky", top: 24, alignSelf: "start" }}>
-              <div className="preview-hang" style={{ background: "#F7F2E7", borderRadius: 20, padding: "32px 18px", display: "flex", justifyContent: "center", boxShadow: "inset 0 0 0 1px #DFD6C1", width: "100%" }}>
+            <div className="preview-panel">
+              <div className="preview-card">
                 <svg width="0" height="0">
                   <filter id="clayGrain">
                     <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise" />
-                    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.05 0" />
-                    <feComposite operator="over" in2="SourceGraphic" />
+                    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.05 0" result="grain" />
+                    <feComposite in="grain" in2="SourceAlpha" operator="in" result="grainClipped" />
+                    <feMerge>
+                      <feMergeNode in="SourceGraphic" />
+                      <feMergeNode in="grainClipped" />
+                    </feMerge>
                   </filter>
                 </svg>
-                <svg viewBox="0 0 100 130" width={200 * size.dim} height={260 * size.dim} className="preview-tag" style={{ transition: "transform 0.4s ease", transformOrigin: "50px 8px" }}>
+                <svg viewBox="0 0 100 130" width={200 * size.dim} height={260 * size.dim} className="preview-tag">
                   <line x1="50" y1="0" x2={shape.ringX} y2={shape.ringY + 30} stroke="#B8AF9C" strokeWidth="1.5" />
                   <ellipse cx={shape.ringX} cy={shape.ringY + 30} rx="6" ry="8" fill="none" stroke="#8A8574" strokeWidth="3" />
                   <g transform="translate(0,30)">
@@ -248,72 +330,105 @@ function PetsArea() {
                   </g>
                 </svg>
               </div>
-              <p style={{ fontSize: 12, color: "#8A8574", marginTop: 12, textAlign: "center", maxWidth: 260 }}>
+              <p className="preview-hint">
                 Pré-visualização — a peça final é feita à mão, pode variar ligeiramente.
               </p>
             </div>
 
-            {/* controls */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              <CustomSection title="Forma">
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <div className="controls">
+              <CustomSection step="01" title="Forma">
+                <div className="option-row">
                   {Object.entries(SHAPES).map(([id, s]) => {
                     const Icon = s.icon;
                     const active = id === shapeId;
                     return (
-                      <button key={id} className="shape-btn" onClick={() => setShapeId(id)} style={{ ...optionBtn, ...(active ? optionBtnActive : {}) }}>
-                        <Icon size={18} color={active ? "#5C6B4A" : "#6B675C"} /> <span>{s.label}</span>
+                      <button key={id} onClick={() => setShapeId(id)} className={`option-btn ${active ? "active" : ""}`}>
+                        <Icon size={18} /> <span>{s.label}</span>
+                        {active && <Check size={13} className="option-check" />}
                       </button>
                     );
                   })}
                 </div>
               </CustomSection>
 
-              <CustomSection title="Cor da argila">
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                  {CLAY_COLORS.map((c) => (
-                    <button key={c.id} className="swatch" onClick={() => setColorId(c.id)} title={c.label}
-                      style={{ width: 32, height: 32, borderRadius: "50%", border: "none", cursor: "pointer", transition: "transform 0.15s", background: c.hex, outline: c.id === colorId ? "2px solid #3D3A34" : "2px solid transparent", outlineOffset: "2px" }} />
-                  ))}
+              <CustomSection step="02" title="Cor da argila">
+                <div className="swatch-row">
+                  {CLAY_COLORS.map((c) => {
+                    const active = c.id === colorId;
+                    return (
+                      <button
+                        key={c.id}
+                        onClick={() => setColorId(c.id)}
+                        title={c.label}
+                        aria-label={c.label}
+                        aria-pressed={active}
+                        className="swatch"
+                        style={{ background: c.hex, outlineColor: active ? "#3D3A34" : "transparent" }}
+                      >
+                        {active && <Check size={14} color={["creme", "manteiga", "argila-rosa"].includes(c.id) ? "#3D3A34" : "#fff"} />}
+                      </button>
+                    );
+                  })}
                 </div>
               </CustomSection>
 
-              <CustomSection title="Texto">
-                <input style={inputStyle} maxLength={12} placeholder="Nome do animal (máx. 12)" value={line1} onChange={(e) => setLine1(e.target.value.toUpperCase())} />
-                <input style={{ ...inputStyle, marginTop: 8 }} maxLength={20} placeholder="Contacto (opcional, +1€)" value={line2} onChange={(e) => setLine2(e.target.value)} />
+              <CustomSection step="03" title="Texto">
+                <div className="field">
+                  <input
+                    className={`text-input ${showNameError ? "invalid" : ""}`}
+                    maxLength={12}
+                    placeholder="Nome do animal (obrigatório)"
+                    value={line1}
+                    onChange={(e) => { setLine1(e.target.value.toUpperCase()); if (e.target.value.trim()) setShowNameError(false); }}
+                    aria-invalid={showNameError}
+                    aria-describedby="line1-help"
+                  />
+                  <div id="line1-help" className={`field-help ${showNameError ? "error" : ""}`}>
+                    {showNameError ? "Escreve o nome do animal para continuar." : `${line1.length}/12`}
+                  </div>
+                </div>
+                <div className="field" style={{ marginTop: 10 }}>
+                  <input
+                    className="text-input"
+                    maxLength={20}
+                    placeholder="Contacto (opcional, +1€)"
+                    value={line2}
+                    onChange={(e) => setLine2(e.target.value)}
+                  />
+                  <div className="field-help">{line2.length}/20</div>
+                </div>
               </CustomSection>
 
-              <CustomSection title="Tipo de letra">
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <CustomSection step="04" title="Tipo de letra">
+                <div className="option-row">
                   {FONTS.map((f) => (
-                    <button key={f.id} className="font-btn" onClick={() => setFontId(f.id)} style={{ ...optionBtn, fontFamily: f.family, ...(f.id === fontId ? optionBtnActive : {}) }}>
+                    <button key={f.id} onClick={() => setFontId(f.id)} style={{ fontFamily: f.family }} className={`option-btn ${f.id === fontId ? "active" : ""}`}>
                       {f.label}
+                      {f.id === fontId && <Check size={13} className="option-check" />}
                     </button>
                   ))}
                 </div>
               </CustomSection>
 
-              <CustomSection title="Tamanho">
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <CustomSection step="05" title="Tamanho">
+                <div className="option-row">
                   {SIZES.map((s) => (
-                    <button key={s.id} className="size-btn" onClick={() => setSizeId(s.id)} style={{ ...optionBtn, ...(s.id === sizeId ? optionBtnActive : {}) }}>
+                    <button key={s.id} onClick={() => setSizeId(s.id)} className={`option-btn ${s.id === sizeId ? "active" : ""}`}>
                       {s.label}
+                      {s.id === sizeId && <Check size={13} className="option-check" />}
                     </button>
                   ))}
                 </div>
               </CustomSection>
 
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginTop: 6, paddingTop: 16, borderTop: "1px solid #DFD6C1", flexWrap: "wrap" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12, border: "1.5px solid #DFD6C1", borderRadius: 10, padding: "4px 6px" }}>
-                  <button style={qtyBtn} onClick={() => setQty((q) => Math.max(1, q - 1))}>−</button>
-                  <span style={{ minWidth: 16, textAlign: "center", fontWeight: 700 }}>{qty}</span>
-                  <button style={qtyBtn} onClick={() => setQty((q) => Math.min(9, q + 1))}>+</button>
+              <div className="order-bar">
+                <div className="qty-control">
+                  <button className="qty-btn" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="Diminuir quantidade">−</button>
+                  <span className="qty-value">{qty}</span>
+                  <button className="qty-btn" onClick={() => setQty((q) => Math.min(9, q + 1))} aria-label="Aumentar quantidade">+</button>
                 </div>
-                <button
-                  onClick={() => setSubmitted(true)}
-                  style={{ display: "flex", alignItems: "center", gap: 8, background: "#5C6B4A", color: "#F7F2E7", border: "none", borderRadius: 12, padding: "13px 22px", fontSize: 14, fontWeight: 700, cursor: "pointer", flex: "1 1 auto", justifyContent: "center" }}
-                >
-                  <ShoppingBag size={16} /> Encomendar — {price}€
+                <button onClick={handleSubmit} className="btn btn-primary-sage order-btn">
+                  <ShoppingBag size={16} /> Encomendar — {formatPrice(price)}
                 </button>
               </div>
             </div>
@@ -321,18 +436,14 @@ function PetsArea() {
         )}
       </section>
 
-      <section style={{ padding: "10px 32px 60px", maxWidth: 900, margin: "0 auto" }}>
-        <h2 style={{ fontFamily: "Georgia,serif", fontSize: 20, marginBottom: 22, textAlign: "center" }}>Como funciona</h2>
+      <section className="section-medium steps-section">
+        <h2 className="section-title section-title-center">Como funciona</h2>
         <div className="grid3">
-          {[
-            { n: "01", t: "Escolhe", d: "Forma, cor de argila e tipo de letra no customizador." },
-            { n: "02", t: "Personaliza", d: "Escreve o nome do animal e, se quiseres, um contacto." },
-            { n: "03", t: "Recebe em casa", d: "Moldamos e cozemos a peça e enviamos em poucos dias." },
-          ].map((step) => (
-            <div key={step.n} style={{ background: "#F7F2E7", borderRadius: 14, padding: 22 }}>
-              <div style={{ fontFamily: "Georgia,serif", fontSize: 22, color: "#C1633B", marginBottom: 8 }}>{step.n}</div>
-              <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 6 }}>{step.t}</div>
-              <div style={{ fontSize: 13, color: "#6B675C", lineHeight: 1.5 }}>{step.d}</div>
+          {STEPS.map((step) => (
+            <div key={step.n} className="step-card">
+              <div className="step-num">{step.n}</div>
+              <div className="step-title">{step.t}</div>
+              <div className="step-desc">{step.d}</div>
             </div>
           ))}
         </div>
@@ -341,23 +452,312 @@ function PetsArea() {
   );
 }
 
-function CustomSection({ title, children }) {
+function CustomSection({ step, title, children }) {
   return (
-    <div>
-      <h3 style={{ fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8A8574", fontWeight: 700, margin: "0 0 10px" }}>{title}</h3>
+    <div className="control-section">
+      <h3 className="control-title"><span className="control-step">{step}</span>{title}</h3>
       {children}
     </div>
   );
 }
 
-const optionBtn = {
-  display: "flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 10,
-  border: "1.5px solid #DFD6C1", background: "#F7F2E7", fontSize: 13, color: "#4A463D",
-  cursor: "pointer", transition: "border-color 0.2s",
-};
-const optionBtnActive = { borderColor: "#5C6B4A", background: "#EAEEE3", color: "#3D3A34", fontWeight: 700 };
-const inputStyle = {
-  width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: 10,
-  border: "1.5px solid #DFD6C1", background: "#F7F2E7", fontSize: 14, color: "#3D3A34", outline: "none",
-};
-const qtyBtn = { border: "none", background: "none", fontSize: 18, width: 28, height: 28, cursor: "pointer", color: "#5C6B4A" };
+function Footer() {
+  return (
+    <footer className="site-footer">
+      <div className="footer-inner">
+        <div className="footer-brand">
+          <div className="brand" style={{ marginBottom: 10 }}>
+            <span className="brand-dot" aria-hidden="true" />
+            <span className="brand-name">{BRAND}</span>
+          </div>
+          <p className="footer-tagline">Brincos & chapinhas de argila, feitos à mão em Portugal.</p>
+        </div>
+        <div className="footer-contact">
+          <a href="https://instagram.com" className="footer-link" target="_blank" rel="noreferrer">
+            <Instagram size={16} /> Instagram
+          </a>
+          <a href="mailto:ola@tactumstudio.pt" className="footer-link">
+            <Mail size={16} /> ola@tactumstudio.pt
+          </a>
+        </div>
+      </div>
+      <div className="footer-bottom">© {new Date().getFullYear()} {BRAND}. Todos os direitos reservados.</div>
+    </footer>
+  );
+}
+
+function GlobalStyle() {
+  return (
+    <style>{`
+      .site { min-height: 100vh; }
+
+      .skip-link {
+        position: absolute; left: 12px; top: -48px; background: var(--color-ink);
+        color: var(--color-bg); padding: 10px 16px; border-radius: var(--radius-sm);
+        font-size: 13px; font-weight: 700; z-index: 100; transition: top 0.15s ease;
+      }
+      .skip-link:focus { top: 12px; }
+
+      /* header */
+      .site-header {
+        position: sticky; top: 0; z-index: 40;
+        background: rgba(243,238,226,0.9); backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .header-inner {
+        max-width: var(--max-width); margin: 0 auto;
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 16px 24px;
+      }
+      .brand { display: flex; align-items: center; gap: 10px; }
+      .brand-dot {
+        width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+        background: conic-gradient(#C1633B,#8A9A7E,#E3A9A0,#E8B04B,#B08D57,#C1633B);
+        box-shadow: var(--shadow-sm);
+      }
+      .brand-name { font-family: var(--font-display); font-size: 19px; font-weight: 600; }
+      .nav-desktop { display: flex; gap: 32px; }
+      .tab-btn {
+        position: relative; background: none; border: none; cursor: pointer;
+        font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+        padding: 8px 2px;
+      }
+      .tab-underline { position: absolute; left: 0; right: 0; bottom: -9px; height: 2px; border-radius: 2px; }
+      .header-actions { display: flex; align-items: center; gap: 6px; }
+      .icon-btn {
+        position: relative; display: inline-flex; align-items: center; justify-content: center;
+        width: 38px; height: 38px; border-radius: 50%; border: none; background: none;
+        color: var(--color-ink); cursor: pointer;
+      }
+      .icon-btn:hover { background: var(--color-surface-alt); }
+      .cart-count {
+        position: absolute; top: 1px; right: 1px; min-width: 15px; height: 15px; padding: 0 3px;
+        border-radius: 8px; background: var(--color-terracotta); color: #fff; font-size: 9px;
+        font-weight: 700; display: flex; align-items: center; justify-content: center;
+      }
+      .nav-toggle { display: none; }
+      .nav-mobile { display: flex; flex-direction: column; padding: 4px 24px 16px; gap: 2px; }
+      .nav-mobile-link {
+        text-align: left; background: none; border: none; padding: 12px 10px; border-radius: var(--radius-sm);
+        font-size: 15px; font-weight: 600; color: var(--color-muted); cursor: pointer;
+      }
+      .nav-mobile-link.active { color: var(--color-ink); background: var(--color-surface-alt); }
+
+      /* material strip */
+      .material-strip { display: flex; justify-content: center; gap: 8px; padding: 10px 0; background: var(--color-surface-alt); }
+      .material-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+      /* buttons */
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        border: none; border-radius: var(--radius-md); padding: 13px 24px; font-size: 14px;
+        font-weight: 700; cursor: pointer; text-decoration: none; transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+      }
+      .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+      .btn:active { transform: translateY(0); box-shadow: none; }
+      .btn-primary { background: var(--color-gold); color: var(--color-charcoal); }
+      .btn-primary-sage { background: var(--color-sage); color: var(--color-surface); flex: 1 1 auto; }
+      .btn-primary-sage:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+      .btn-ghost-dark { background: rgba(247,242,231,0.08); color: var(--color-surface); border: 1.5px solid rgba(247,242,231,0.35); }
+      .btn-ghost-dark:hover { background: rgba(247,242,231,0.14); }
+      .btn-outline-sage { background: none; border: 1.5px solid var(--color-sage); color: var(--color-sage); }
+      .btn-outline-sage:hover { background: var(--color-sage-tint); }
+
+      /* hero */
+      .hero { padding: 84px 24px 76px; text-align: center; }
+      .hero-dark {
+        background:
+          radial-gradient(60% 90% at 50% -10%, rgba(176,141,87,0.18), transparent),
+          var(--color-charcoal);
+        color: var(--color-surface);
+      }
+      .hero-light { background: var(--color-surface); padding: 60px 24px 32px; }
+      .hero-badge {
+        display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;
+        letter-spacing: 0.14em; color: var(--color-gold); margin-bottom: 18px;
+      }
+      .hero-badge-sage { color: var(--color-sage); }
+      .hero-title {
+        font-family: var(--font-display); font-size: 48px; font-weight: 600; max-width: 640px;
+        margin: 0 auto 18px; line-height: 1.12;
+      }
+      .hero-title-sm { font-size: 34px; max-width: 560px; margin-bottom: 12px; }
+      .hero-sub { max-width: 420px; margin: 0 auto 32px; color: #C9C0AE; font-size: 16px; line-height: 1.65; }
+      .hero-sub-light { color: var(--color-muted); font-size: 15px; max-width: 460px; margin-bottom: 0; }
+      .hero-actions { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+      /* features */
+      .features-grid {
+        max-width: var(--max-width); margin: 0 auto; padding: 40px 24px;
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+      }
+      .feature-item { display: flex; align-items: flex-start; gap: 12px; }
+      .feature-icon {
+        width: 36px; height: 36px; border-radius: 10px; background: var(--color-surface-alt);
+        color: var(--color-sage); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      }
+      .feature-title { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+      .feature-desc { font-size: 12.5px; color: var(--color-muted); line-height: 1.5; }
+
+      /* sections */
+      .section-narrow { padding: 24px 24px 64px; max-width: var(--max-width); margin: 0 auto; }
+      .section-medium { padding: 24px 24px 64px; max-width: 960px; margin: 0 auto; }
+      .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 24px; }
+      .section-title { font-family: var(--font-display); font-size: 24px; font-weight: 600; margin: 0; }
+      .section-title-center { text-align: center; margin-bottom: 28px; }
+      .section-count { font-size: 13px; color: var(--color-faint); }
+
+      .grid4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+      .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+      .grid2 { display: grid; grid-template-columns: minmax(240px,360px) 1fr; gap: 44px; align-items: start; }
+
+      /* product card */
+      .product-card { cursor: pointer; }
+      .product-image {
+        position: relative; border-radius: var(--radius-lg); aspect-ratio: 1; margin-bottom: 12px;
+        overflow: hidden; transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+      .product-card:hover .product-image { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+      .badge {
+        position: absolute; top: 10px; left: 10px; background: var(--color-charcoal); color: var(--color-surface);
+        font-size: 10px; font-weight: 700; letter-spacing: 0.04em; padding: 4px 9px; border-radius: 999px;
+      }
+      .quick-add {
+        position: absolute; bottom: 10px; right: 10px; width: 34px; height: 34px; border-radius: 50%;
+        background: var(--color-surface); border: none; color: var(--color-ink); cursor: pointer;
+        display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm);
+        opacity: 0; transform: translateY(6px); transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+      .product-card:hover .quick-add, .quick-add:focus-visible { opacity: 1; transform: translateY(0); }
+      .product-name { font-size: 13.5px; font-weight: 700; }
+      .product-price { font-size: 13px; color: var(--color-muted); margin-top: 2px; }
+
+      /* cross-sell */
+      .cross-sell { background: var(--color-sage-tint); padding: 44px 24px; }
+      .cross-sell-inner {
+        max-width: var(--max-width); margin: 0 auto; display: flex; align-items: center;
+        justify-content: space-between; gap: 24px; flex-wrap: wrap;
+      }
+      .cross-sell-info { display: flex; align-items: center; gap: 16px; }
+      .cross-sell-icon {
+        width: 44px; height: 44px; border-radius: 50%; background: var(--color-surface);
+        color: var(--color-sage); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      }
+      .cross-sell-title { font-weight: 700; font-size: 15px; }
+      .cross-sell-desc { font-size: 13px; color: var(--color-muted); margin-top: 2px; }
+
+      /* customizer */
+      .preview-panel { display: flex; flex-direction: column; align-items: center; position: sticky; top: 88px; align-self: start; }
+      .preview-card {
+        background: var(--color-surface); border-radius: var(--radius-xl); padding: 36px 18px;
+        display: flex; justify-content: center; box-shadow: var(--shadow-md); width: 100%;
+      }
+      .preview-tag { transition: transform 0.4s ease; transform-origin: 50px 8px; }
+      .preview-hang:hover .preview-tag { transform: rotate(3deg); }
+      .preview-hint { font-size: 12px; color: var(--color-faint); margin-top: 14px; text-align: center; max-width: 260px; }
+
+      .controls { display: flex; flex-direction: column; gap: 22px; }
+      .control-section {}
+      .control-title {
+        display: flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: 0.06em;
+        text-transform: uppercase; color: var(--color-muted); font-weight: 700; margin: 0 0 12px;
+      }
+      .control-step {
+        width: 18px; height: 18px; border-radius: 5px; background: var(--color-surface-alt);
+        color: var(--color-faint); display: inline-flex; align-items: center; justify-content: center;
+        font-size: 9px; letter-spacing: 0;
+      }
+      .option-row { display: flex; gap: 8px; flex-wrap: wrap; }
+      .option-btn {
+        position: relative; display: flex; align-items: center; gap: 6px; padding: 9px 16px 9px 14px;
+        border-radius: var(--radius-md); border: 1.5px solid var(--color-border); background: var(--color-surface);
+        font-size: 13px; color: var(--color-ink-soft); cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease;
+      }
+      .option-btn:hover { border-color: var(--color-sage); }
+      .option-btn.active { border-color: var(--color-sage); background: var(--color-sage-tint); color: #3D3A34; font-weight: 700; }
+      .option-check { color: var(--color-sage); }
+
+      .swatch-row { display: flex; gap: 10px; flex-wrap: wrap; }
+      .swatch {
+        width: 34px; height: 34px; border-radius: 50%; border: none; cursor: pointer;
+        display: flex; align-items: center; justify-content: center; transition: transform 0.15s ease;
+        outline: 2px solid transparent; outline-offset: 2px;
+      }
+      .swatch:hover { transform: translateY(-2px); }
+
+      .field { display: flex; flex-direction: column; }
+      .text-input {
+        width: 100%; box-sizing: border-box; padding: 11px 14px; border-radius: var(--radius-md);
+        border: 1.5px solid var(--color-border); background: var(--color-surface); font-size: 14px;
+        color: var(--color-ink-soft); outline: none; transition: border-color 0.15s ease;
+      }
+      .text-input:focus { border-color: var(--color-sage); }
+      .text-input.invalid { border-color: var(--color-terracotta); }
+      .field-help { font-size: 11.5px; color: var(--color-faint); margin-top: 5px; text-align: right; }
+      .field-help.error { color: var(--color-terracotta); text-align: left; font-weight: 600; }
+
+      .order-bar {
+        display: flex; align-items: center; justify-content: space-between; gap: 16px;
+        margin-top: 4px; padding-top: 20px; border-top: 1px solid var(--color-border); flex-wrap: wrap;
+      }
+      .qty-control {
+        display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--color-border);
+        border-radius: var(--radius-md); padding: 4px 6px;
+      }
+      .qty-btn { border: none; background: none; font-size: 18px; width: 28px; height: 28px; cursor: pointer; color: var(--color-sage); border-radius: 6px; }
+      .qty-btn:hover { background: var(--color-sage-tint); }
+      .qty-value { min-width: 16px; text-align: center; font-weight: 700; }
+      .order-btn { display: flex; align-items: center; gap: 8px; border-radius: var(--radius-md); padding: 14px 22px; font-size: 14px; justify-content: center; }
+
+      /* success */
+      .success-card {
+        max-width: 440px; margin: 40px auto; background: var(--color-surface); border-radius: var(--radius-xl);
+        padding: 44px 32px; text-align: center; box-shadow: var(--shadow-md);
+      }
+      .success-icon {
+        width: 56px; height: 56px; border-radius: 50%; background: var(--color-sage);
+        display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
+      }
+      .success-title { font-family: var(--font-display); font-size: 22px; margin: 0 0 10px; }
+      .success-text { font-size: 14px; color: var(--color-muted); line-height: 1.6; margin: 0 0 24px; }
+
+      /* steps */
+      .step-card { background: var(--color-surface); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); }
+      .step-num { font-family: var(--font-display); font-size: 22px; color: var(--color-terracotta); margin-bottom: 8px; }
+      .step-title { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+      .step-desc { font-size: 13px; color: var(--color-muted); line-height: 1.55; }
+
+      /* footer */
+      .site-footer { border-top: 1px solid var(--color-border); margin-top: 20px; }
+      .footer-inner {
+        max-width: var(--max-width); margin: 0 auto; padding: 40px 24px 20px;
+        display: flex; justify-content: space-between; gap: 32px; flex-wrap: wrap;
+      }
+      .footer-tagline { font-size: 13px; color: var(--color-muted); margin: 0; max-width: 280px; }
+      .footer-contact { display: flex; flex-direction: column; gap: 10px; }
+      .footer-link { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--color-ink-soft); text-decoration: none; }
+      .footer-link:hover { color: var(--color-sage); }
+      .footer-bottom { text-align: center; font-size: 11.5px; color: var(--color-faint); padding: 16px 24px 28px; }
+
+      @media (max-width: 900px) {
+        .grid2 { grid-template-columns: 1fr; }
+        .preview-panel { position: static; }
+      }
+      @media (max-width: 760px) {
+        .grid4 { grid-template-columns: repeat(2,1fr); }
+        .grid3 { grid-template-columns: 1fr; }
+        .features-grid { grid-template-columns: repeat(2,1fr); }
+        .hero-title { font-size: 32px !important; }
+        .hero { padding: 64px 20px 56px; }
+      }
+      @media (max-width: 720px) {
+        .nav-desktop { display: none; }
+        .nav-toggle { display: inline-flex; }
+      }
+      @media (max-width: 480px) {
+        .features-grid { grid-template-columns: 1fr; }
+        .header-inner { padding: 14px 18px; }
+      }
+    `}</style>
+  );
+}
