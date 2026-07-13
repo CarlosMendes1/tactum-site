@@ -83,24 +83,36 @@ export function MaterialStrip() {
 export function Footer() {
   return (
     <footer className="site-footer">
+      <div className="footer-word" aria-hidden="true">tactum studio</div>
       <div className="footer-inner">
         <div className="footer-brand">
-          <div className="brand" style={{ marginBottom: 10 }}>
+          <div className="footer-brand-row">
             <span className="brand-dot" aria-hidden="true" />
             <span className="brand-name">{BRAND}</span>
           </div>
-          <p className="footer-tagline">Brincos & chapinhas de argila, feitos à mão em Portugal.</p>
+          <p className="footer-tagline">
+            Brincos & chapinhas de argila, moldados um a um no nosso estúdio em Portugal.
+          </p>
         </div>
-        <div className="footer-contact">
+        <nav className="footer-col" aria-label="Explorar">
+          <h3 className="footer-heading">Explorar</h3>
+          <Link href="/brincos" className="footer-link">Catálogo de brincos</Link>
+          <Link href="/pets" className="footer-link">Chapinhas para pets</Link>
+        </nav>
+        <div className="footer-col">
+          <h3 className="footer-heading">Contacto</h3>
           <a href="https://instagram.com" className="footer-link" target="_blank" rel="noreferrer">
-            <Instagram size={16} /> Instagram
+            <Instagram size={15} /> Instagram
           </a>
           <a href="mailto:ola@tactumstudio.pt" className="footer-link">
-            <Mail size={16} /> ola@tactumstudio.pt
+            <Mail size={15} /> ola@tactumstudio.pt
           </a>
         </div>
       </div>
-      <div className="footer-bottom">© {new Date().getFullYear()} {BRAND}. Todos os direitos reservados.</div>
+      <div className="footer-bottom">
+        <span>© {new Date().getFullYear()} {BRAND}. Todos os direitos reservados.</span>
+        <span>Feito à mão, do barro ao forno.</span>
+      </div>
     </footer>
   );
 }

@@ -33,7 +33,7 @@ export default function BrincosCatalog() {
         <div className="page-head-eyebrow">
           <Sparkles size={13} /> CATÁLOGO
         </div>
-        <h1 className="page-head-title">Brincos de argila</h1>
+        <h1 className="page-head-title">Brincos de <span className="head-accent">argila</span></h1>
         <p className="page-head-sub">
           Cada peça é moldada, cozida e montada à mão no nosso estúdio. Pequenas variações fazem parte — é isso que a torna tua.
         </p>
