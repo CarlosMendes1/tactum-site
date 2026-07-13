@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import {
-  PawPrint, Sparkles, ShoppingBag, ArrowRight, Heart, Circle, Bone, Check,
+  PawPrint, Sparkles, ShoppingBag, ArrowRight, Heart, Circle, Bone,
 } from "lucide-react";
 
 const BRAND = "tactum studio";
@@ -10,11 +10,29 @@ const BRAND = "tactum studio";
 const CLAY_DOTS = ["#C1633B", "#8A9A7E", "#E3A9A0", "#E8B04B", "#B08D57", "#4A463D"];
 
 const EARRINGS = [
-  { name: "Argola Terra", price: "18€", bg: "linear-gradient(160deg,#E9DFCB,#C9B48C)" },
-  { name: "Gota Sálvia", price: "16€", bg: "linear-gradient(160deg,#DCE4D4,#8A9A7E)" },
-  { name: "Lua Creme", price: "14€", bg: "linear-gradient(160deg,#F2ECDD,#D6C9A8)" },
-  { name: "Botão Terracota", price: "12€", bg: "linear-gradient(160deg,#E8C3AE,#C1633B)" },
+  { name: "Argola Terra", price: 18, bg: "linear-gradient(160deg,#E9DFCB,#C9B48C)" },
+  { name: "Gota Sálvia", price: 16, bg: "linear-gradient(160deg,#DCE4D4,#8A9A7E)" },
+  { name: "Lua Creme", price: 14, bg: "linear-gradient(160deg,#F2ECDD,#D6C9A8)" },
+  { name: "Botão Terracota", price: 12, bg: "linear-gradient(160deg,#E8C3AE,#C1633B)" },
 ];
+
+async function goToCheckout(items, setError) {
+  setError("");
+  try {
+    const res = await fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.url) {
+      throw new Error(data.error || "Não foi possível iniciar o pagamento.");
+    }
+    window.location.href = data.url;
+  } catch (err) {
+    setError(err.message || "Não foi possível iniciar o pagamento.");
+  }
+}
 
 const CLAY_COLORS = [
   { id: "terracota", label: "Terracota", hex: "#C1633B", dark: "#9B4B2B" },
@@ -138,11 +156,7 @@ function BrincosArea({ onSeePets }) {
         <h2 style={{ fontFamily: "Georgia,serif", fontSize: 22, marginBottom: 24 }}>Mais recentes</h2>
         <div className="grid4">
           {EARRINGS.map((e) => (
-            <div key={e.name} className="card" style={{ transition: "transform 0.2s" }}>
-              <div style={{ background: e.bg, borderRadius: 14, aspectRatio: "1", marginBottom: 10 }} />
-              <div style={{ fontSize: 13, fontWeight: 700 }}>{e.name}</div>
-              <div style={{ fontSize: 13, color: "#8A8574" }}>{e.price}</div>
-            </div>
+            <EarringCard key={e.name} earring={e} />
           ))}
         </div>
       </section>
@@ -165,6 +179,36 @@ function BrincosArea({ onSeePets }) {
   );
 }
 
+function EarringCard({ earring }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleBuy = async () => {
+    setLoading(true);
+    await goToCheckout(
+      [{ name: earring.name, unitAmount: Math.round(earring.price * 100), quantity: 1 }],
+      setError
+    );
+    setLoading(false);
+  };
+
+  return (
+    <div className="card" style={{ transition: "transform 0.2s" }}>
+      <div style={{ background: earring.bg, borderRadius: 14, aspectRatio: "1", marginBottom: 10 }} />
+      <div style={{ fontSize: 13, fontWeight: 700 }}>{earring.name}</div>
+      <div style={{ fontSize: 13, color: "#8A8574", marginBottom: 8 }}>{earring.price}€</div>
+      <button
+        onClick={handleBuy}
+        disabled={loading}
+        style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, width: "100%", background: loading ? "#DFD6C1" : "#262220", color: "#F3EEE2", border: "none", borderRadius: 8, padding: "8px 10px", fontSize: 12, fontWeight: 700, cursor: loading ? "default" : "pointer" }}
+      >
+        <ShoppingBag size={13} /> {loading ? "A abrir pagamento..." : "Comprar"}
+      </button>
+      {error && <div style={{ fontSize: 11, color: "#C1633B", marginTop: 6 }}>{error}</div>}
+    </div>
+  );
+}
+
 function PetsArea() {
   const [shapeId, setShapeId] = useState("osso");
   const [colorId, setColorId] = useState("terracota");
@@ -173,7 +217,8 @@ function PetsArea() {
   const [line1, setLine1] = useState("LUNA");
   const [line2, setLine2] = useState("");
   const [qty, setQty] = useState(1);
-  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const shape = SHAPES[shapeId];
   const color = CLAY_COLORS.find((c) => c.id === colorId);
@@ -181,11 +226,29 @@ function PetsArea() {
   const font = FONTS.find((f) => f.id === fontId);
   const textColor = ["creme", "manteiga", "argila-rosa"].includes(colorId) ? "#3D3A34" : "#F7F2E7";
 
-  const price = useMemo(() => {
+  const unitPrice = useMemo(() => {
     let p = BASE_PRICE * size.mult;
     if (line2.trim().length > 0) p += 1;
-    return (p * qty).toFixed(2);
-  }, [size, line2, qty]);
+    return p;
+  }, [size, line2]);
+
+  const price = (unitPrice * qty).toFixed(2);
+
+  const handleBuy = async () => {
+    setLoading(true);
+    await goToCheckout(
+      [
+        {
+          name: `Chapinha ${shape.label} — ${line1 || "personalizada"}`,
+          description: `Cor: ${color.label} · Tamanho: ${size.label} · Letra: ${font.label}${line2 ? ` · Contacto: ${line2}` : ""}`,
+          unitAmount: Math.round(unitPrice * 100),
+          quantity: qty,
+        },
+      ],
+      setError
+    );
+    setLoading(false);
+  };
 
   return (
     <>
@@ -203,23 +266,6 @@ function PetsArea() {
 
       {/* CUSTOMIZER */}
       <section style={{ padding: "20px 32px 60px", maxWidth: 900, margin: "0 auto" }}>
-        {submitted ? (
-          <div style={{ maxWidth: 420, margin: "40px auto", background: "#F7F2E7", borderRadius: 20, padding: "40px 32px", textAlign: "center", boxShadow: "inset 0 0 0 1px #DFD6C1" }}>
-            <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#5C6B4A", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 18px" }}>
-              <Check size={28} color="#EFE7D4" strokeWidth={3} />
-            </div>
-            <h2 style={{ fontFamily: "Georgia,serif", fontSize: 22, margin: "0 0 10px" }}>Pedido enviado</h2>
-            <p style={{ fontSize: 14, color: "#6B675C", lineHeight: 1.5, margin: "0 0 22px" }}>
-              Recebemos o teu pedido de {qty}× chapinha "{line1 || "—"}". Vamos confirmar contigo por Instagram antes do envio.
-            </p>
-            <button
-              onClick={() => setSubmitted(false)}
-              style={{ border: "1.5px solid #5C6B4A", background: "none", color: "#5C6B4A", borderRadius: 10, padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
-            >
-              Fazer outro pedido
-            </button>
-          </div>
-        ) : (
           <div className="grid2">
             {/* preview */}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", position: "sticky", top: 24, alignSelf: "start" }}>
@@ -310,15 +356,16 @@ function PetsArea() {
                   <button style={qtyBtn} onClick={() => setQty((q) => Math.min(9, q + 1))}>+</button>
                 </div>
                 <button
-                  onClick={() => setSubmitted(true)}
-                  style={{ display: "flex", alignItems: "center", gap: 8, background: "#5C6B4A", color: "#F7F2E7", border: "none", borderRadius: 12, padding: "13px 22px", fontSize: 14, fontWeight: 700, cursor: "pointer", flex: "1 1 auto", justifyContent: "center" }}
+                  onClick={handleBuy}
+                  disabled={loading}
+                  style={{ display: "flex", alignItems: "center", gap: 8, background: loading ? "#A9B69A" : "#5C6B4A", color: "#F7F2E7", border: "none", borderRadius: 12, padding: "13px 22px", fontSize: 14, fontWeight: 700, cursor: loading ? "default" : "pointer", flex: "1 1 auto", justifyContent: "center" }}
                 >
-                  <ShoppingBag size={16} /> Encomendar — {price}€
+                  <ShoppingBag size={16} /> {loading ? "A abrir pagamento..." : `Encomendar — ${price}€`}
                 </button>
               </div>
+              {error && <div style={{ fontSize: 12, color: "#C1633B" }}>{error}</div>}
             </div>
           </div>
-        )}
       </section>
 
       <section style={{ padding: "10px 32px 60px", maxWidth: 900, margin: "0 auto" }}>
