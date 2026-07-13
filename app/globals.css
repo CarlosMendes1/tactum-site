@@ -2,12 +2,80 @@
   box-sizing: border-box;
 }
 
+:root {
+  --font-display: var(--font-display), Georgia, "Iowan Old Style", serif;
+  --font-sans: var(--font-sans), "Segoe UI", sans-serif;
+
+  --color-bg: #f3eee2;
+  --color-surface: #f7f2e7;
+  --color-surface-alt: #ede7d6;
+  --color-ink: #2e2b26;
+  --color-ink-soft: #4a463d;
+  --color-muted: #6b675c;
+  --color-faint: #a79e8a;
+  --color-border: #e1d8c3;
+  --color-border-strong: #cdc0a3;
+
+  --color-charcoal: #262220;
+  --color-charcoal-2: #322d2a;
+
+  --color-gold: #b08d57;
+  --color-gold-dark: #8f7040;
+  --color-sage: #5c6b4a;
+  --color-sage-dark: #48553a;
+  --color-sage-tint: #eaeee3;
+  --color-terracotta: #c1633b;
+  --color-terracotta-dark: #9b4b2b;
+  --color-terracotta-tint: #f5e6de;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+
+  --shadow-sm: 0 1px 2px rgba(38, 34, 32, 0.06);
+  --shadow-md: 0 6px 20px rgba(38, 34, 32, 0.08);
+  --shadow-lg: 0 16px 40px rgba(38, 34, 32, 0.14);
+
+  --max-width: 1120px;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font-family: inherit;
 }
 
 button {
-  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-sage);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-charcoal);
 }
