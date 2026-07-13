@@ -1,9 +1,10 @@
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
+import { Header, MaterialStrip, Footer } from "../components/SiteChrome";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-display",
+  variable: "--font-fraunces",
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
   display: "swap",
@@ -11,7 +12,7 @@ const fraunces = Fraunces({
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-inter",
   weight: ["400", "500", "600", "700"],
   display: "swap",
 });
@@ -25,7 +26,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="pt" className={`${fraunces.variable} ${inter.variable}`}>
-      <body>{children}</body>
+      <body>
+        <a href="#conteudo" className="skip-link">Saltar para o conteúdo</a>
+        <Header />
+        <MaterialStrip />
+        <main id="conteudo">{children}</main>
+        <Footer />
+      </body>
     </html>
   );
 }

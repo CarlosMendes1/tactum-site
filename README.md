@@ -71,16 +71,23 @@ Isto simula exatamente o que vai correr depois de publicado. Precisas da mesma v
 ```
 tactum-site/
 ├── app/
-│   ├── layout.js            # layout raiz (título da página, etc.)
-│   ├── page.js              # página inicial — renderiza o site
-│   ├── globals.css          # reset de estilos
+│   ├── layout.js            # layout raiz: fontes, header, footer
+│   ├── page.js              # página inicial (hero + destaques)
+│   ├── globals.css          # design tokens + todos os estilos
+│   ├── brincos/page.js      # catálogo de brincos (filtros + vista rápida)
+│   ├── pets/page.js         # customizador de chapinhas
 │   ├── api/checkout/route.js  # cria a sessão de Stripe Checkout
 │   ├── success/page.js      # página depois de pagamento bem-sucedido
 │   └── cancel/page.js       # página se o cliente cancelar o pagamento
 ├── components/
-│   └── TactumStudioSite.jsx   # todo o site: nav, área Brincos, área Pets + customizador
+│   ├── SiteChrome.jsx       # header (navegação), material strip e footer
+│   ├── BrincosCatalog.jsx   # grelha do catálogo, filtros, modal de produto
+│   ├── PetsCustomizer.jsx   # customizador completo da área Pets
+│   └── EarringVisual.jsx    # ilustração SVG de cada brinco
 ├── lib/
-│   └── stripe.js            # cliente Stripe (servidor)
+│   ├── stripe.js            # cliente Stripe (servidor)
+│   ├── checkout.js          # helper que chama /api/checkout (browser)
+│   └── products.js          # catálogo: peças, tons de argila, preços
 ├── .env.local.example       # modelo da variável STRIPE_SECRET_KEY
 ├── package.json
 ├── next.config.mjs
