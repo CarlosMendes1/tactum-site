@@ -63,7 +63,6 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        <div className="scroll-cue" aria-hidden="true" />
       </section>
 
       <div className="marquee" aria-hidden="true">

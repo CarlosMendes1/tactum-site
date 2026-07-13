@@ -208,20 +208,6 @@ svg {
   to { translate: 0 10px; }
 }
 
-.scroll-cue {
-  position: absolute; left: 50%; bottom: 22px; translate: -50% 0; z-index: 1;
-  width: 22px; height: 34px; border: 1.5px solid rgba(247,242,231,0.4); border-radius: 12px;
-  display: flex; justify-content: center; padding-top: 7px;
-}
-.scroll-cue::before {
-  content: ""; width: 3px; height: 7px; border-radius: 2px; background: var(--color-gold);
-  animation: cueBob 1.8s ease-in-out infinite;
-}
-@keyframes cueBob {
-  0%, 100% { translate: 0 0; opacity: 1; }
-  55% { translate: 0 9px; opacity: 0.2; }
-}
-
 /* ---------- marquee ---------- */
 
 .marquee {
@@ -577,6 +563,6 @@ svg {
   .earring-svg, .preview-tag, .btn, .cat-visual { transition: none; }
   .cat-card:hover .earring-svg, .cat-visual:focus-visible .earring-svg { transform: none; }
   .qv-overlay, .qv { animation: none; }
-  .hero-float, .scroll-cue::before, .marquee-track, .catalog-grid .cat-card { animation: none; }
+  .hero-float, .marquee-track, .catalog-grid .cat-card { animation: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }
