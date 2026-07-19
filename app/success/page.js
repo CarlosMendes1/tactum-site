@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { stripe } from "../../lib/stripe";
+import { getStripe } from "../../lib/stripe";
 
 export const metadata = { title: "Encomenda confirmada — tactum studio" };
 
 async function getSession(sessionId) {
   if (!sessionId) return null;
   try {
-    return await stripe.checkout.sessions.retrieve(sessionId);
+    return await getStripe().checkout.sessions.retrieve(sessionId);
   } catch {
     return null;
   }

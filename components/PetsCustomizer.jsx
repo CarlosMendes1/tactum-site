@@ -16,8 +16,8 @@ const CLAY_COLORS = [
 const SHAPES = {
   osso: {
     label: "Osso", icon: Bone,
-    path: "M20,35 C10,35 4,43 4,50 C4,57 10,65 20,65 C27,65 32,59 34,54 L66,54 C68,59 73,65 80,65 C90,65 96,57 96,50 C96,43 90,35 80,35 C73,35 68,41 66,46 L34,46 C32,41 27,35 20,35 Z",
-    ringX: 50, ringY: 37,
+    path: "M20,33 C9,33 3,41 3,50 C3,59 9,67 20,67 C26,67 31,63 34,59 L66,59 C69,63 74,67 80,67 C91,67 97,59 97,50 C97,41 91,33 80,33 C74,33 69,37 66,41 L34,41 C31,37 26,33 20,33 Z",
+    ringX: 50, ringY: 33,
   },
   redonda: {
     label: "Redonda", icon: Circle,
@@ -43,6 +43,28 @@ const FONTS = [
 ];
 
 const BASE_PRICE = 8.5;
+
+// Posição/tamanho do texto gravado, por forma (viewBox 100×100 da peça).
+// O osso é baixo — a barra central só tem espaço entre y≈41 e y≈59; o coração
+// estreita em baixo. `maxW` limita a largura para o auto-ajuste do corpo de letra.
+const TEXT_LAYOUT = {
+  osso: {
+    name: { y: 54, yWith2: 50.5, size: 13, sizeWith2: 10.5, maxW: 80 },
+    contact: { y: 58.5, size: 6.5, maxW: 66 },
+  },
+  redonda: {
+    name: { y: 54, yWith2: 49, size: 15, sizeWith2: 14, maxW: 72 },
+    contact: { y: 63, size: 8.5, maxW: 60 },
+  },
+  coracao: {
+    name: { y: 50, yWith2: 46, size: 14, sizeWith2: 13, maxW: 58 },
+    contact: { y: 59, size: 7.5, maxW: 36 },
+  },
+};
+
+// Encolhe o corpo de letra para o texto caber na largura útil da forma
+const fitSize = (base, maxW, len, widthFactor) =>
+  len > 0 ? Math.min(base, maxW / (widthFactor * len)) : base;
 
 const STEPS = [
   { n: "01", t: "Escolhe", d: "Forma, cor de argila e tipo de letra no customizador." },
@@ -71,6 +93,17 @@ export default function PetsCustomizer() {
   const font = FONTS.find((f) => f.id === fontId);
   const textColor = ["creme", "manteiga", "argila-rosa"].includes(colorId) ? "#3D3A34" : "#F7F2E7";
   const nameValid = line1.trim().length > 0;
+
+  const layout = TEXT_LAYOUT[shapeId];
+  const hasContact = line2.trim().length > 0;
+  const displayName = line1 || "NOME";
+  const nameFontSize = fitSize(
+    hasContact ? layout.name.sizeWith2 : layout.name.size,
+    layout.name.maxW,
+    displayName.length,
+    0.68
+  );
+  const contactFontSize = fitSize(layout.contact.size, layout.contact.maxW, line2.length, 0.6);
 
   const unitPrice = useMemo(() => {
     let p = BASE_PRICE * size.mult;
@@ -133,11 +166,11 @@ export default function PetsCustomizer() {
                   <g transform="translate(0,30)">
                     <path d={shape.path} fill={color.dark} transform="translate(1.5,2.5)" opacity="0.35" />
                     <path d={shape.path} fill={color.hex} filter="url(#clayGrain)" stroke={color.dark} strokeWidth="0.6" />
-                    <text x="50" y={line2 ? "48" : "54"} textAnchor="middle" fontFamily={font.family} fontSize="15" fontWeight="700" fill={textColor} letterSpacing="0.5">
-                      {line1 || "NOME"}
+                    <text x="50" y={hasContact ? layout.name.yWith2 : layout.name.y} textAnchor="middle" fontFamily={font.family} fontSize={nameFontSize} fontWeight="700" fill={textColor} letterSpacing="0.5">
+                      {displayName}
                     </text>
-                    {line2 && (
-                      <text x="50" y="63" textAnchor="middle" fontFamily={font.family} fontSize="9" fill={textColor} opacity="0.85">
+                    {hasContact && (
+                      <text x="50" y={layout.contact.y} textAnchor="middle" fontFamily={font.family} fontSize={contactFontSize} fill={textColor} opacity="0.85">
                         {line2}
                       </text>
                     )}

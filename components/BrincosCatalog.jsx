@@ -12,20 +12,20 @@ const SORTS = [
   { id: "preco-desc", label: "Preço: mais alto" },
 ];
 
-const USED_TONES = [...new Set(EARRINGS.map((e) => e.tone))];
-
-export default function BrincosCatalog() {
+export default function BrincosCatalog({ products = EARRINGS }) {
   const [tone, setTone] = useState("todos");
   const [sort, setSort] = useState("novidades");
   const [selected, setSelected] = useState(null);
 
+  const usedTones = useMemo(() => [...new Set(products.map((e) => e.tone))], [products]);
+
   const items = useMemo(() => {
-    let list = tone === "todos" ? [...EARRINGS] : EARRINGS.filter((e) => e.tone === tone);
+    let list = tone === "todos" ? [...products] : products.filter((e) => e.tone === tone);
     if (sort === "preco-asc") list.sort((a, b) => a.price - b.price);
     if (sort === "preco-desc") list.sort((a, b) => b.price - a.price);
     if (sort === "novidades") list.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
     return list;
-  }, [tone, sort]);
+  }, [products, tone, sort]);
 
   return (
     <>
@@ -44,7 +44,7 @@ export default function BrincosCatalog() {
           <button className={`chip ${tone === "todos" ? "active" : ""}`} aria-pressed={tone === "todos"} onClick={() => setTone("todos")}>
             Todos
           </button>
-          {USED_TONES.map((t) => (
+          {usedTones.map((t) => (
             <button
               key={t}
               className={`chip ${tone === t ? "active" : ""}`}

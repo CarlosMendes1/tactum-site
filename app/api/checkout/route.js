@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { stripe } from "../../../lib/stripe";
+import { getStripe } from "../../../lib/stripe";
 
 function isValidItem(item) {
   return (
@@ -30,7 +30,7 @@ export async function POST(request) {
   const origin = request.nextUrl.origin;
 
   try {
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       mode: "payment",
       line_items: items.map((item) => ({
         quantity: item.quantity,

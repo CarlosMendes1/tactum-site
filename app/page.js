@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { PawPrint, Sparkles, ArrowRight, Truck, Leaf, Gem } from "lucide-react";
 import { EARRINGS, CLAY_TONES, formatPrice } from "../lib/products";
+import { getEarrings } from "../lib/earrings";
 import EarringVisual from "../components/EarringVisual";
 import Reveal from "../components/Reveal";
+
+// Os destaques vêm do Supabase; a página revalida a cada 60s
+export const revalidate = 60;
 
 const FEATURES = [
   { icon: Gem, title: "Feito à mão", desc: "Cada peça moldada e cozida artesanalmente." },
@@ -31,8 +35,10 @@ function MarqueeContent() {
   );
 }
 
-export default function Home() {
-  const highlights = EARRINGS.slice(0, 4);
+export default async function Home() {
+  const products = await getEarrings();
+  const highlights = products.slice(0, 4);
+  // Ilustrações decorativas do hero — ficam sempre nas peças de assinatura estáticas
   const floatLeft = EARRINGS.find((e) => e.id === "argola-terra");
   const floatRight = EARRINGS.find((e) => e.id === "gota-salvia");
 
