@@ -33,7 +33,7 @@ export default function BrincosCatalog({ products = EARRINGS }) {
         <div className="page-head-eyebrow">
           <Sparkles size={13} /> CATÁLOGO
         </div>
-        <h1 className="page-head-title">Brincos de <span className="head-accent">argila</span></h1>
+        <h1 className="page-head-title">Brincos em <span className="head-accent">argila polimérica</span></h1>
         <p className="page-head-sub">
           Cada peça é moldada, cozida e montada à mão no nosso estúdio. Pequenas variações fazem parte — é isso que a torna tua.
         </p>
@@ -127,7 +127,7 @@ function QuickView({ item, onClose }) {
     await goToCheckout(
       [{
         name: item.name,
-        description: `Brincos de argila (par) — tom ${toneData.label}, feitos à mão`,
+        description: `Brincos em argila polimérica (par) — tom ${toneData.label}, feitos à mão`,
         unitAmount: Math.round(item.price * 100),
         quantity: qty,
       }],
@@ -151,7 +151,7 @@ function QuickView({ item, onClose }) {
           <div className="qv-price">{formatPrice(item.price)} <span style={{ fontWeight: 400, fontSize: 13, color: "var(--color-faint)" }}>/ par</span></div>
           <p className="qv-desc">{item.desc}</p>
           <ul className="qv-meta">
-            <li><Check size={14} /> Argila cozida e selada, muito leve</li>
+            <li><Check size={14} /> Argila polimérica cozida e selada — muito leve</li>
             <li><Check size={14} /> Ganchos em aço inoxidável hipoalergénico</li>
             <li><Check size={14} /> Feito à mão em Portugal — peça única</li>
           </ul>

@@ -139,9 +139,9 @@ export default function PetsCustomizer() {
         <div className="hero-badge hero-badge-sage">
           <PawPrint size={14} /> NOVA LINHA
         </div>
-        <h1 className="hero-title hero-title-sm">Uma chapinha de argila para o teu companheiro</h1>
+        <h1 className="hero-title hero-title-sm">Uma chapinha personalizada para o teu companheiro</h1>
         <p className="hero-sub hero-sub-light">
-          Personaliza abaixo. Moldamos, gravamos e cozemos cada peça à mão, do mesmo barro dos nossos brincos.
+          Personaliza abaixo. Moldamos, gravamos e cozemos cada peça à mão, da mesma argila polimérica dos nossos brincos.
         </p>
       </section>
 

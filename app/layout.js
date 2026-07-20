@@ -18,9 +18,9 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "tactum studio — brincos & chapinhas de argila",
+  title: "tactum studio — brincos & chapinhas em argila polimérica",
   description:
-    "Brincos e chapinhas de argila feitos à mão em Portugal. Personaliza a chapinha do teu animal.",
+    "Brincos e chapinhas em argila polimérica, feitos à mão em Portugal. Personaliza a chapinha do teu animal.",
 };
 
 export default function RootLayout({ children }) {

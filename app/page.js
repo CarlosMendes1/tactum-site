@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PawPrint, Sparkles, ArrowRight, Truck, Leaf, Gem } from "lucide-react";
+import { PawPrint, Sparkles, ArrowRight, Truck, Feather, Gem } from "lucide-react";
 import { EARRINGS, CLAY_TONES, formatPrice } from "../lib/products";
 import { getEarrings } from "../lib/earrings";
 import EarringVisual from "../components/EarringVisual";
@@ -9,18 +9,18 @@ import Reveal from "../components/Reveal";
 export const revalidate = 60;
 
 const FEATURES = [
-  { icon: Gem, title: "Feito à mão", desc: "Cada peça moldada e cozida artesanalmente." },
-  { icon: Leaf, title: "Argila natural", desc: "Materiais simples, sem plásticos desnecessários." },
+  { icon: Gem, title: "Feito à mão", desc: "Cada peça modelada e cozida artesanalmente." },
+  { icon: Feather, title: "Muito leves", desc: "Argila polimérica — usa-os o dia todo sem dar por eles." },
   { icon: Sparkles, title: "Peça única", desc: "Nunca dois brincos exatamente iguais." },
   { icon: Truck, title: "Envio cuidado", desc: "Embalado com cuidado, direto de Portugal." },
 ];
 
 const MARQUEE_ITEMS = [
   "Feito à mão em Portugal",
-  "Argila natural",
+  "Argila polimérica",
   "Nunca dois iguais",
   "Pequenas séries",
-  "Do barro ao forno",
+  "Cor a cor, camada a camada",
 ];
 
 function MarqueeContent() {
@@ -45,6 +45,13 @@ export default async function Home() {
   return (
     <>
       <section className="hero hero-dark">
+        {/* Vídeo de fundo em loop; se /videos/hero.mp4 não existir, fica o gradiente */}
+        <video className="hero-video" autoPlay muted loop playsInline preload="metadata" aria-hidden="true">
+          {/* o ?v= força o browser a ignorar a cache quando o vídeo muda */}
+          <source src="/videos/hero.mp4?v=2" type="video/mp4" />
+        </video>
+        <div className="hero-scrim" aria-hidden="true" />
+
         <div className="hero-float hero-float-1" aria-hidden="true">
           <EarringVisual product={floatLeft} size={130} idSuffix="hero1" />
         </div>
@@ -55,10 +62,10 @@ export default async function Home() {
         <div className="hero-inner">
           <div className="hero-badge">COLEÇÃO ATUAL</div>
           <h1 className="hero-title">
-            Peças de argila moldadas à mão, <span className="hero-accent">uma a uma</span>
+            Brincos em argila polimérica, moldados à mão <span className="hero-accent">um a um</span>
           </h1>
           <p className="hero-sub">
-            Cada par de brincos nasce do barro e do forno — nunca dois exatamente iguais.
+            Cada par é modelado cor a cor e cozido no forno — nunca dois exatamente iguais.
           </p>
           <div className="hero-actions">
             <Link href="/brincos" className="btn btn-primary btn-lg">
@@ -129,7 +136,7 @@ export default async function Home() {
               <div className="cross-sell-icon"><PawPrint size={22} /></div>
               <div>
                 <div className="cross-sell-title">Também fazemos chapinhas para colares</div>
-                <div className="cross-sell-desc">Mesmo barro, agora para o teu animal.</div>
+                <div className="cross-sell-desc">A mesma argila polimérica, agora para o teu animal.</div>
               </div>
             </div>
             <Link href="/pets" className="btn btn-outline-sage">

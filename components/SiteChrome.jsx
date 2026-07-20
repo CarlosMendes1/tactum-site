@@ -91,7 +91,7 @@ export function Footer() {
             <span className="brand-name">{BRAND}</span>
           </div>
           <p className="footer-tagline">
-            Brincos & chapinhas de argila, moldados um a um no nosso estúdio em Portugal.
+            Brincos & chapinhas em argila polimérica, moldados um a um no nosso estúdio em Portugal.
           </p>
         </div>
         <nav className="footer-col" aria-label="Explorar">
@@ -111,7 +111,7 @@ export function Footer() {
       </div>
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} {BRAND}. Todos os direitos reservados.</span>
-        <span>Feito à mão, do barro ao forno.</span>
+        <span>Feito à mão, cor a cor.</span>
       </div>
     </footer>
   );

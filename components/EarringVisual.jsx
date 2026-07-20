@@ -37,7 +37,7 @@ export default function EarringVisual({ product, size = 180, idSuffix = "" }) {
       height={size * 1.4}
       className="earring-svg"
       role="img"
-      aria-label={`${product.name} — brinco de argila em tom ${tone.label.toLowerCase()}`}
+      aria-label={`${product.name} — brinco em argila polimérica, tom ${tone.label.toLowerCase()}`}
     >
       <defs>
         <filter id={filterId}>

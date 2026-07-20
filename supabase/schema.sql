@@ -23,7 +23,7 @@ create policy "Leitura pública de brincos ativos"
 
 -- Coleção inicial (igual à lista estática do site)
 insert into public.brincos (name, price, tone, shape, description, is_new, sort_order) values
-  ('Argola Terra', 18, 'terracota', 'argola', 'Argola aberta em argila terracota, leve e escultural. A peça de assinatura do estúdio — presença sem peso.', true, 1),
+  ('Argola Terra', 18, 'terracota', 'argola', 'Argola aberta em tons de terracota, leve e escultural. A peça de assinatura do estúdio — presença sem peso.', true, 1),
   ('Arco Grafite', 17, 'grafite', 'arco', 'Um arco sóbrio em grafite, de linhas arquitetónicas. Combina com tudo, do linho ao blazer.', true, 2),
   ('Gota Sálvia', 16, 'salvia', 'gota', 'Gota alongada num verde sálvia calmo. Movimento suave a cada passo.', false, 3),
   ('Pétala Rosa', 15, 'rosa', 'petala', 'Inspirada nas pétalas do fim do verão, em rosa argila. Delicada mas com carácter.', false, 4),
