@@ -209,18 +209,6 @@ svg {
 .hero-sub-light { color: var(--color-muted); font-size: 15px; max-width: 460px; margin-bottom: 0; }
 .hero-actions { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
 
-.hero-float {
-  position: absolute; z-index: 0; pointer-events: none; opacity: 0.9;
-  filter: drop-shadow(0 24px 30px rgba(0,0,0,0.35));
-  animation: heroFloat 7s ease-in-out infinite alternate;
-}
-.hero-float-1 { left: 7%; top: 16%; transform: rotate(-10deg); }
-.hero-float-2 { right: 7%; bottom: 10%; transform: rotate(9deg); animation-delay: -3.5s; animation-duration: 8s; }
-@keyframes heroFloat {
-  from { translate: 0 -8px; }
-  to { translate: 0 10px; }
-}
-
 /* ---------- marquee ---------- */
 
 .marquee {
@@ -320,6 +308,13 @@ svg {
 .cat-card:hover .cat-visual { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 .cat-card--featured .cat-visual { aspect-ratio: auto; flex: 1; min-height: 420px; }
 
+.piece-photo {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+.cat-card:hover .piece-photo,
+.cat-visual:focus-visible .piece-photo { transform: scale(1.04); }
+
 .earring-svg {
   transform-origin: 50% 10%;
   transition: transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1);
@@ -329,8 +324,9 @@ svg {
 
 .badge {
   position: absolute; top: 12px; left: 12px; background: var(--color-charcoal); color: var(--color-surface);
-  font-size: 10px; font-weight: 700; letter-spacing: 0.04em; padding: 4px 9px; border-radius: 999px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.04em; padding: 4px 9px; border-radius: 999px; z-index: 2;
 }
+.badge--soldout { background: var(--color-terracotta); }
 .cat-hint {
   position: absolute; bottom: 12px; right: 12px; font-size: 11px; font-weight: 700;
   color: var(--color-ink-soft); background: rgba(247,242,231,0.85); border-radius: 999px;
@@ -547,9 +543,6 @@ svg {
   .qv { grid-template-columns: 1fr; }
   .qv-media { border-radius: var(--radius-xl) var(--radius-xl) 0 0; min-height: 300px; }
 }
-@media (max-width: 900px) {
-  .hero-float { display: none; }
-}
 @media (max-width: 760px) {
   .grid3 { grid-template-columns: 1fr; }
   .features-grid { grid-template-columns: repeat(2,1fr); }
@@ -576,6 +569,6 @@ svg {
   .earring-svg, .preview-tag, .btn, .cat-visual { transition: none; }
   .cat-card:hover .earring-svg, .cat-visual:focus-visible .earring-svg { transform: none; }
   .qv-overlay, .qv { animation: none; }
-  .hero-float, .marquee-track, .catalog-grid .cat-card { animation: none; }
+  .marquee-track, .catalog-grid .cat-card { animation: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }

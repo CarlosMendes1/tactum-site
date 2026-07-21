@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { PawPrint, Sparkles, ArrowRight, Truck, Feather, Gem } from "lucide-react";
-import { EARRINGS, CLAY_TONES, formatPrice } from "../lib/products";
+import { CLAY_TONES, formatPrice } from "../lib/products";
 import { getEarrings } from "../lib/earrings";
-import EarringVisual from "../components/EarringVisual";
+import PieceVisual from "../components/PieceVisual";
 import Reveal from "../components/Reveal";
 
 // Os destaques vêm do Supabase; a página revalida a cada 60s
@@ -38,9 +38,6 @@ function MarqueeContent() {
 export default async function Home() {
   const products = await getEarrings();
   const highlights = products.slice(0, 4);
-  // Ilustrações decorativas do hero — ficam sempre nas peças de assinatura estáticas
-  const floatLeft = EARRINGS.find((e) => e.id === "argola-terra");
-  const floatRight = EARRINGS.find((e) => e.id === "gota-salvia");
 
   return (
     <>
@@ -51,13 +48,6 @@ export default async function Home() {
           <source src="/videos/hero.mp4?v=2" type="video/mp4" />
         </video>
         <div className="hero-scrim" aria-hidden="true" />
-
-        <div className="hero-float hero-float-1" aria-hidden="true">
-          <EarringVisual product={floatLeft} size={130} idSuffix="hero1" />
-        </div>
-        <div className="hero-float hero-float-2" aria-hidden="true">
-          <EarringVisual product={floatRight} size={116} idSuffix="hero2" />
-        </div>
 
         <div className="hero-inner">
           <div className="hero-badge">COLEÇÃO ATUAL</div>
@@ -113,8 +103,10 @@ export default async function Home() {
             <Reveal key={item.id} delay={i * 90}>
               <Link href="/brincos" className="cat-card" style={{ textDecoration: "none", color: "inherit" }}>
                 <span className="cat-visual" style={{ background: CLAY_TONES[item.tone].tile }}>
-                  {item.isNew && <span className="badge">Novo</span>}
-                  <EarringVisual product={item} size={140} idSuffix="home" />
+                  {item.stock === 0
+                    ? <span className="badge badge--soldout">Esgotado</span>
+                    : item.isNew && <span className="badge">Novo</span>}
+                  <PieceVisual item={item} size={140} idSuffix="home" />
                 </span>
                 <span className="cat-info">
                   <span>

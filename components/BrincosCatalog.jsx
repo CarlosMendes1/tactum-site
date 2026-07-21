@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Sparkles, ShoppingBag, X, Check, Loader2 } from "lucide-react";
 import { EARRINGS, CLAY_TONES, formatPrice } from "../lib/products";
 import { goToCheckout } from "../lib/checkout";
-import EarringVisual from "./EarringVisual";
+import PieceVisual from "./PieceVisual";
 
 const SORTS = [
   { id: "novidades", label: "Novidades" },
@@ -90,8 +90,10 @@ function CatalogCard({ item, featured, onOpen }) {
   return (
     <article className={`cat-card ${featured ? "cat-card--featured" : ""}`}>
       <button className="cat-visual" style={{ background: toneData.tile }} onClick={onOpen}>
-        {item.isNew && <span className="badge">Novo</span>}
-        <EarringVisual product={item} size={featured ? 240 : 150} />
+        {item.stock === 0
+          ? <span className="badge badge--soldout">Esgotado</span>
+          : item.isNew && <span className="badge">Novo</span>}
+        <PieceVisual item={item} size={featured ? 240 : 150} />
         <span className="cat-hint" aria-hidden="true">Ver peça</span>
       </button>
       <div className="cat-info">
@@ -108,6 +110,8 @@ function CatalogCard({ item, featured, onOpen }) {
 
 function QuickView({ item, onClose }) {
   const toneData = CLAY_TONES[item.tone];
+  const soldOut = item.stock === 0;
+  const maxQty = item.stock != null ? Math.min(9, item.stock) : 9;
   const [qty, setQty] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -143,10 +147,10 @@ function QuickView({ item, onClose }) {
           <X size={18} />
         </button>
         <div className="qv-media" style={{ background: toneData.tile }}>
-          <EarringVisual product={item} size={220} idSuffix="qv" />
+          <PieceVisual item={item} size={220} idSuffix="qv" />
         </div>
         <div className="qv-body">
-          <div className="qv-eyebrow">{toneData.label}{item.isNew ? " · Novo" : ""}</div>
+          <div className="qv-eyebrow">{toneData.label}{soldOut ? " · Esgotado" : item.isNew ? " · Novo" : ""}</div>
           <h2 className="qv-title" id="qv-title">{item.name}</h2>
           <div className="qv-price">{formatPrice(item.price)} <span style={{ fontWeight: 400, fontSize: 13, color: "var(--color-faint)" }}>/ par</span></div>
           <p className="qv-desc">{item.desc}</p>
@@ -157,13 +161,13 @@ function QuickView({ item, onClose }) {
           </ul>
           <div className="qv-actions">
             <div className="qty-control">
-              <button className="qty-btn" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="Diminuir quantidade">−</button>
+              <button className="qty-btn" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="Diminuir quantidade" disabled={soldOut}>−</button>
               <span className="qty-value">{qty}</span>
-              <button className="qty-btn" onClick={() => setQty((q) => Math.min(9, q + 1))} aria-label="Aumentar quantidade">+</button>
+              <button className="qty-btn" onClick={() => setQty((q) => Math.min(maxQty, q + 1))} aria-label="Aumentar quantidade" disabled={soldOut}>+</button>
             </div>
-            <button className="btn btn-primary-sage order-btn" onClick={handleBuy} disabled={loading}>
+            <button className="btn btn-primary-sage order-btn" onClick={handleBuy} disabled={loading || soldOut}>
               {loading ? <Loader2 size={16} className="spin" /> : <ShoppingBag size={16} />}
-              {loading ? "A abrir pagamento..." : `Comprar — ${formatPrice(item.price * qty)}`}
+              {soldOut ? "Esgotado" : loading ? "A abrir pagamento..." : `Comprar — ${formatPrice(item.price * qty)}`}
             </button>
           </div>
           {error && <div className="field-help error" role="status">{error}</div>}
