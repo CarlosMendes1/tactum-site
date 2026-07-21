@@ -6,3 +6,7 @@ out
 .DS_Store
 npm-debug.log*
 .claude/
+
+# fotos originais e preparadas (vão para o Supabase Storage, não para o git)
+photos-raw
+photos-ready
