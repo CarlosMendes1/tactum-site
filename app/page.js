@@ -15,26 +15,6 @@ const FEATURES = [
   { icon: Truck, title: "Envio cuidado", desc: "Embalado com cuidado, direto de Portugal." },
 ];
 
-const MARQUEE_ITEMS = [
-  "Feito à mão em Portugal",
-  "Argila polimérica",
-  "Nunca dois iguais",
-  "Pequenas séries",
-  "Cor a cor, camada a camada",
-];
-
-function MarqueeContent() {
-  return (
-    <span className="marquee-item">
-      {MARQUEE_ITEMS.map((item) => (
-        <span key={item} style={{ display: "inline-flex", alignItems: "center", gap: 44 }}>
-          {item} <span className="dot" />
-        </span>
-      ))}
-    </span>
-  );
-}
-
 export default async function Home() {
   const products = await getEarrings();
   const highlights = products.slice(0, 4);
@@ -67,13 +47,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
-      <div className="marquee" aria-hidden="true">
-        <div className="marquee-track">
-          <MarqueeContent />
-          <MarqueeContent />
-        </div>
-      </div>
 
       <Reveal>
         <section className="features-grid">
