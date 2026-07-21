@@ -159,6 +159,8 @@ svg {
 .btn-outline-sage:hover { background: var(--color-sage-tint); }
 .btn-charcoal { background: var(--color-charcoal); color: var(--color-surface); }
 
+.coming-soon { padding-top: 120px; padding-bottom: 130px; }
+
 /* ---------- hero ---------- */
 
 .hero { padding: 84px 24px 76px; text-align: center; }
