@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Instagram, Mail } from "lucide-react";
+import { Menu, X, Instagram, Mail, ShoppingBag } from "lucide-react";
+import { useCart } from "../lib/cart";
 
 const BRAND = "tactum studio";
 const CLAY_DOTS = ["#C1633B", "#8A9A7E", "#E3A9A0", "#E8B04B", "#B08D57", "#4A463D"];
@@ -16,6 +17,7 @@ const NAV_LINKS = [
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { count, openCart, hydrated } = useCart();
 
   return (
     <header className="site-header">
@@ -43,6 +45,14 @@ export function Header() {
         </nav>
 
         <div className="header-actions">
+          <button
+            className="icon-btn cart-btn"
+            aria-label={`Abrir carrinho${hydrated && count > 0 ? `, ${count} ${count === 1 ? "artigo" : "artigos"}` : ""}`}
+            onClick={openCart}
+          >
+            <ShoppingBag size={19} />
+            {hydrated && count > 0 && <span className="cart-count">{count}</span>}
+          </button>
           <button
             className="icon-btn nav-toggle"
             aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}

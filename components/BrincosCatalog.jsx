@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ShoppingBag, X, Check, Loader2, ArrowRight, ArrowUpRight } from "lucide-react";
+import { ShoppingBag, X, Check, ArrowRight, ArrowUpRight, Plus } from "lucide-react";
 import { EARRINGS, CLAY_TONES, formatPrice } from "../lib/products";
-import { goToCheckout } from "../lib/checkout";
+import { useCart } from "../lib/cart";
 import PieceVisual from "./PieceVisual";
 import Reveal from "./Reveal";
 
@@ -189,8 +189,7 @@ function QuickView({ item, onClose }) {
   const soldOut = item.stock === 0;
   const maxQty = item.stock != null ? Math.min(9, item.stock) : 9;
   const [qty, setQty] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { addItem } = useCart();
   const dialogRef = useRef(null);
 
   useEffect(() => {
@@ -224,18 +223,9 @@ function QuickView({ item, onClose }) {
     };
   }, [onClose]);
 
-  const handleBuy = async () => {
-    setLoading(true);
-    await goToCheckout(
-      [{
-        name: item.name,
-        description: `Brincos em argila polimérica (par) — tom ${toneData.label}, feitos à mão`,
-        unitAmount: Math.round(item.price * 100),
-        quantity: qty,
-      }],
-      setError
-    );
-    setLoading(false);
+  const handleAdd = () => {
+    addItem(item, qty); // abre o carrinho automaticamente
+    onClose();
   };
 
   return (
@@ -263,13 +253,12 @@ function QuickView({ item, onClose }) {
               <span className="qty-value">{qty}</span>
               <button className="qty-btn" onClick={() => setQty((q) => Math.min(maxQty, q + 1))} aria-label="Aumentar quantidade" disabled={soldOut}>+</button>
             </div>
-            <button className="btn btn-primary-sage order-btn" onClick={handleBuy} disabled={loading || soldOut}>
-              {loading ? <Loader2 size={16} className="spin" /> : <ShoppingBag size={16} />}
-              {soldOut ? "Esgotado" : loading ? "A abrir pagamento..." : `Comprar — ${formatPrice(item.price * qty)}`}
+            <button className="btn btn-primary-sage order-btn" onClick={handleAdd} disabled={soldOut}>
+              {soldOut ? <ShoppingBag size={16} /> : <Plus size={16} />}
+              {soldOut ? "Esgotado" : `Adicionar — ${formatPrice(item.price * qty)}`}
             </button>
           </div>
-          {error && <div className="field-help error" role="status">{error}</div>}
-          <p className="qv-note">Envio em 3–5 dias úteis. Pagamento seguro via Stripe.</p>
+          <p className="qv-note">Envio em 3–5 dias úteis. Pagamento seguro via Stripe no carrinho.</p>
         </div>
       </div>
     </div>
