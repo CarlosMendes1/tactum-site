@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Sparkles, ShoppingBag, X, Check, Loader2 } from "lucide-react";
 import { EARRINGS, CLAY_TONES, formatPrice } from "../lib/products";
 import { goToCheckout } from "../lib/checkout";
@@ -115,14 +115,36 @@ function QuickView({ item, onClose }) {
   const [qty, setQty] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const dialogRef = useRef(null);
 
   useEffect(() => {
-    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    // devolve o foco a quem abriu o modal quando este fecha (WCAG 2.4.3)
+    const opener = document.activeElement;
+    const dialog = dialogRef.current;
+
+    const onKey = (e) => {
+      if (e.key === "Escape") { onClose(); return; }
+      if (e.key !== "Tab" || !dialog) return;
+      // focus trap: mantém o Tab dentro do diálogo
+      const focusables = dialog.querySelectorAll(
+        'a[href], button:not([disabled]), input, select, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault(); last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first.focus();
+      }
+    };
+
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
+      if (opener instanceof HTMLElement) opener.focus();
     };
   }, [onClose]);
 
@@ -142,7 +164,7 @@ function QuickView({ item, onClose }) {
 
   return (
     <div className="qv-overlay" onClick={onClose}>
-      <div className="qv" role="dialog" aria-modal="true" aria-labelledby="qv-title" onClick={(e) => e.stopPropagation()}>
+      <div ref={dialogRef} className="qv" role="dialog" aria-modal="true" aria-labelledby="qv-title" onClick={(e) => e.stopPropagation()}>
         <button className="qv-close" aria-label="Fechar" onClick={onClose} autoFocus>
           <X size={18} />
         </button>

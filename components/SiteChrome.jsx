@@ -35,7 +35,7 @@ export function Header() {
                 className="tab-btn"
                 aria-current={active ? "page" : undefined}
               >
-                <span style={{ color: active ? "var(--color-ink)" : "var(--color-faint)" }}>{link.label}</span>
+                <span>{link.label}</span>
                 {active && <span className="tab-underline" style={{ background: link.accent }} />}
               </Link>
             );

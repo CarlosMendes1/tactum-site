@@ -12,7 +12,11 @@
   --color-ink: #2e2b26;
   --color-ink-soft: #4a463d;
   --color-muted: #6b675c;
-  --color-faint: #a79e8a;
+  /* faint escurecido de #a79e8a → contraste AA (~4.3:1) sobre o fundo;
+     antes reprovava WCAG para texto pequeno */
+  --color-faint: #7c735d;
+  /* tom decorativo (pontos, linhas) onde o contraste de texto não se aplica */
+  --color-faint-decorative: #a79e8a;
   --color-border: #e1d8c3;
   --color-border-strong: #cdc0a3;
 
@@ -33,6 +37,14 @@
   --radius-lg: 18px;
   --radius-xl: 26px;
 
+  /* escala tipográfica — substitui valores soltos (12.5, 13.5, 11.5…) */
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 17px;
+
   --shadow-sm: 0 1px 2px rgba(38, 34, 32, 0.06);
   --shadow-md: 0 6px 20px rgba(38, 34, 32, 0.08);
   --shadow-lg: 0 16px 40px rgba(38, 34, 32, 0.14);
@@ -44,7 +56,9 @@ html,
 body {
   margin: 0;
   padding: 0;
-  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
 }
 
 body {
@@ -116,8 +130,9 @@ svg {
   font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
   padding: 8px 2px; text-decoration: none;
 }
-.tab-btn span { transition: color 0.2s ease; }
-.tab-btn:hover span { color: var(--color-ink) !important; }
+.tab-btn span { color: var(--color-muted); transition: color 0.2s ease; }
+.tab-btn:hover span,
+.tab-btn[aria-current="page"] span { color: var(--color-ink); }
 .tab-underline { position: absolute; left: 0; right: 0; bottom: -9px; height: 2px; border-radius: 2px; }
 .header-actions { display: flex; align-items: center; gap: 6px; }
 .icon-btn {
@@ -150,7 +165,7 @@ svg {
 .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
 .btn .btn-arrow { transition: transform 0.2s ease; }
 .btn:hover .btn-arrow { transform: translateX(3px); }
-.btn-lg { padding: 15px 30px; font-size: 15px; border-radius: 14px; }
+.btn-lg { padding: 15px 30px; font-size: var(--text-md); border-radius: var(--radius-md); }
 .btn-primary { background: var(--color-gold); color: var(--color-charcoal); }
 .btn-primary-sage { background: var(--color-sage); color: var(--color-surface); flex: 1 1 auto; }
 .btn-ghost-dark { background: rgba(247,242,231,0.08); color: var(--color-surface); border: 1.5px solid rgba(247,242,231,0.35); }
@@ -222,8 +237,8 @@ svg {
   width: 36px; height: 36px; border-radius: 10px; background: var(--color-surface-alt);
   color: var(--color-sage); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.feature-title { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
-.feature-desc { font-size: 12.5px; color: var(--color-muted); line-height: 1.5; }
+.feature-title { font-size: var(--text-sm); font-weight: 700; margin-bottom: 2px; }
+.feature-desc { font-size: var(--text-xs); color: var(--color-muted); line-height: 1.55; }
 
 /* ---------- sections ---------- */
 
@@ -318,8 +333,8 @@ svg {
 .cat-card:hover .cat-hint, .cat-visual:focus-visible .cat-hint { opacity: 1; transform: translateY(0); }
 
 .cat-info { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 12px 2px 0; }
-.product-name { font-size: 14px; font-weight: 700; }
-.product-tone { font-size: 12px; color: var(--color-faint); margin-top: 2px; }
+.product-name { font-size: var(--text-base); font-weight: 700; }
+.product-tone { font-size: var(--text-xs); color: var(--color-muted); margin-top: 2px; }
 .product-price { font-size: 14px; color: var(--color-ink-soft); font-weight: 600; white-space: nowrap; }
 .cat-desc { font-size: 13px; color: var(--color-muted); line-height: 1.55; margin: 6px 2px 0; max-width: 440px; }
 
@@ -385,8 +400,23 @@ svg {
 .cross-sell-title { font-weight: 700; font-size: 15px; }
 .cross-sell-desc { font-size: 13px; color: var(--color-muted); margin-top: 2px; }
 
+/* ---------- cartão de sucesso (checkout + pets) ---------- */
+
+.success-card {
+  max-width: 460px; margin: 48px auto; text-align: center;
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl); padding: 44px 36px; box-shadow: var(--shadow-md);
+}
+.success-icon {
+  width: 60px; height: 60px; border-radius: 50%; background: var(--color-sage);
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+}
+.success-title { font-family: var(--font-display); font-size: 24px; font-weight: 600; margin: 0 0 10px; }
+.success-text { font-size: var(--text-base); color: var(--color-muted); line-height: 1.65; margin: 0 0 24px; }
+
 /* ---------- customizador pets ---------- */
 
+.customizer-section { padding-top: 8px; }
 .preview-panel { display: flex; flex-direction: column; align-items: center; position: sticky; top: 88px; align-self: start; }
 .preview-card {
   background: var(--color-surface); border-radius: var(--radius-xl); padding: 36px 18px;
@@ -432,7 +462,7 @@ svg {
 }
 .text-input:focus { border-color: var(--color-sage); }
 .text-input.invalid { border-color: var(--color-terracotta); }
-.field-help { font-size: 11.5px; color: var(--color-faint); margin-top: 5px; text-align: right; }
+.field-help { font-size: var(--text-2xs); color: var(--color-muted); margin-top: 5px; text-align: right; }
 .field-help.error { color: var(--color-terracotta); text-align: left; font-weight: 600; }
 
 .order-bar {
@@ -475,11 +505,11 @@ svg {
   font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--color-gold); margin: 0 0 14px;
 }
-.footer-tagline { font-size: 13.5px; color: #A79E8A; margin: 0; max-width: 300px; line-height: 1.65; }
+.footer-tagline { font-size: var(--text-sm); color: #BFB49C; margin: 0; max-width: 300px; line-height: 1.65; }
 .footer-col { display: flex; flex-direction: column; gap: 10px; }
 .footer-link {
-  display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px;
-  color: #C9C0AE; text-decoration: none; width: fit-content; transition: color 0.15s ease;
+  display: inline-flex; align-items: center; gap: 8px; font-size: var(--text-sm);
+  color: #CFC6B2; text-decoration: none; width: fit-content; transition: color 0.15s ease;
 }
 .footer-link:hover { color: var(--color-surface); }
 .footer-brand-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
