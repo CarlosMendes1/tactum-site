@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Sparkles, ShoppingBag, X, Check, Loader2 } from "lucide-react";
+import { ShoppingBag, X, Check, Loader2, ArrowRight, ArrowUpRight } from "lucide-react";
 import { EARRINGS, CLAY_TONES, formatPrice } from "../lib/products";
 import { goToCheckout } from "../lib/checkout";
 import PieceVisual from "./PieceVisual";
+import Reveal from "./Reveal";
 
 const SORTS = [
   { id: "novidades", label: "Novidades" },
-  { id: "preco-asc", label: "Preço: mais baixo" },
-  { id: "preco-desc", label: "Preço: mais alto" },
+  { id: "preco-asc", label: "Preço ↑" },
+  { id: "preco-desc", label: "Preço ↓" },
 ];
 
 export default function BrincosCatalog({ products = EARRINGS }) {
@@ -27,83 +28,158 @@ export default function BrincosCatalog({ products = EARRINGS }) {
     return list;
   }, [products, tone, sort]);
 
+  const [spotlight, ...rest] = items;
+
   return (
     <>
-      <section className="page-head">
-        <div className="page-head-eyebrow">
-          <Sparkles size={13} /> CATÁLOGO
-        </div>
-        <h1 className="page-head-title">Brincos em <span className="head-accent">argila polimérica</span></h1>
-        <p className="page-head-sub">
-          Cada peça é moldada, cozida e montada à mão no nosso estúdio. Pequenas variações fazem parte — é isso que a torna tua.
+      {/* ---------- abertura editorial ---------- */}
+      <section className="ed-intro">
+        <span className="ed-intro-eyebrow">Coleção 2026 · feito à mão em Portugal</span>
+        <h1 className="ed-intro-title">
+          Brincos que se <span className="head-accent">usam como se contam</span>
+        </h1>
+        <p className="ed-intro-lede">
+          Peças em argila polimérica, moldadas e cozidas uma a uma. Cada tom nasce de uma
+          receita de cor própria — escolhe o teu e descobre a peça.
         </p>
       </section>
 
-      <div className="catalog-toolbar">
-        <div className="chip-row" role="group" aria-label="Filtrar por tom de argila">
-          <button className={`chip ${tone === "todos" ? "active" : ""}`} aria-pressed={tone === "todos"} onClick={() => setTone("todos")}>
-            Todos
+      {/* ---------- coleções por tom ---------- */}
+      <nav className="ed-collections" aria-label="Explorar por tom">
+        <div className="ed-collections-scroll" role="group">
+          <button
+            className={`tone-pill ${tone === "todos" ? "active" : ""}`}
+            aria-pressed={tone === "todos"}
+            onClick={() => setTone("todos")}
+          >
+            Toda a coleção
           </button>
           {usedTones.map((t) => (
             <button
               key={t}
-              className={`chip ${tone === t ? "active" : ""}`}
+              className={`tone-pill ${tone === t ? "active" : ""}`}
               aria-pressed={tone === t}
               onClick={() => setTone(t)}
             >
-              <span className="chip-dot" style={{ background: CLAY_TONES[t].hex }} />
+              <span className="tone-pill-dot" style={{ background: CLAY_TONES[t].hex }} />
               {CLAY_TONES[t].label}
             </button>
           ))}
         </div>
-        <select className="sort-select" value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Ordenar peças">
-          {SORTS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
-        </select>
-      </div>
+        <div className="ed-sort" role="group" aria-label="Ordenar">
+          {SORTS.map((s) => (
+            <button
+              key={s.id}
+              className={`ed-sort-btn ${sort === s.id ? "active" : ""}`}
+              aria-pressed={sort === s.id}
+              onClick={() => setSort(s.id)}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+      </nav>
 
-      <div className="catalog-grid">
-        {items.length === 0 ? (
+      {items.length === 0 ? (
+        <section className="ed-shell">
           <div className="empty-state">
             <h2 className="empty-state-title">Nada neste tom, por agora</h2>
-            <p className="empty-state-text">Estamos sempre a tirar peças novas do forno. Entretanto, vê o catálogo completo.</p>
-            <button className="btn btn-outline-sage" onClick={() => setTone("todos")}>Ver todas as peças</button>
+            <p className="empty-state-text">Estamos sempre a tirar peças novas do forno. Entretanto, vê a coleção completa.</p>
+            <button className="btn btn-outline-sage" onClick={() => setTone("todos")}>Ver toda a coleção</button>
           </div>
-        ) : (
-          items.map((item, i) => (
-            <CatalogCard
-              key={item.id}
-              item={item}
-              featured={i === 0 && tone === "todos"}
-              onOpen={() => setSelected(item)}
-            />
-          ))
-        )}
-      </div>
+        </section>
+      ) : (
+        <>
+          {/* ---------- peça em destaque ---------- */}
+          <Spotlight item={spotlight} index={1} onOpen={() => setSelected(spotlight)} />
+
+          {/* ---------- linhas editoriais alternadas ---------- */}
+          {rest.length > 0 && (
+            <section className="ed-list" aria-label="Peças da coleção">
+              {rest.map((item, i) => (
+                <Reveal key={item.id}>
+                  <EditorialRow
+                    item={item}
+                    index={i + 2}
+                    reverse={i % 2 === 1}
+                    onOpen={() => setSelected(item)}
+                  />
+                </Reveal>
+              ))}
+            </section>
+          )}
+
+          {/* ---------- fecho editorial ---------- */}
+          <Reveal>
+            <section className="ed-closing">
+              <p className="ed-closing-note">
+                {items.length} {items.length === 1 ? "peça" : "peças"} nesta seleção · novas a cada estação
+              </p>
+              <p className="ed-closing-line">Não encontraste a tua? Escreve-nos — fazemos peças por medida.</p>
+              <a href="mailto:ola@tactumstudio.pt" className="btn btn-outline-sage">Pedir uma peça única</a>
+            </section>
+          </Reveal>
+        </>
+      )}
 
       {selected && <QuickView item={selected} onClose={() => setSelected(null)} />}
     </>
   );
 }
 
-function CatalogCard({ item, featured, onOpen }) {
+/* Peça em destaque — split editorial assimétrico */
+function Spotlight({ item, index, onOpen }) {
   const toneData = CLAY_TONES[item.tone];
+  const soldOut = item.stock === 0;
   return (
-    <article className={`cat-card ${featured ? "cat-card--featured" : ""}`}>
-      <button className="cat-visual" style={{ background: toneData.tile }} onClick={onOpen}>
-        {item.stock === 0
+    <section className="ed-spotlight">
+      <button className="ed-spotlight-media" style={{ background: toneData.tile }} onClick={onOpen} aria-label={`Ver ${item.name}`}>
+        {soldOut
+          ? <span className="badge badge--soldout">Esgotado</span>
+          : item.isNew && <span className="badge badge--light">Peça de assinatura</span>}
+        <PieceVisual item={item} size={300} idSuffix="spot" />
+      </button>
+      <div className="ed-spotlight-body">
+        <span className="ed-index">{String(index).padStart(2, "0")}</span>
+        <span className="ed-tone-label"><span className="tone-pill-dot" style={{ background: toneData.hex }} /> {toneData.label}</span>
+        <h2 className="ed-spotlight-name">{item.name}</h2>
+        <p className="ed-spotlight-desc">{item.desc}</p>
+        <div className="ed-spotlight-foot">
+          <span className="ed-price">{formatPrice(item.price)}</span>
+          <button className="btn btn-charcoal" onClick={onOpen}>
+            Descobrir a peça <ArrowRight size={15} className="btn-arrow" />
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* Linha editorial alternada */
+function EditorialRow({ item, index, reverse, onOpen }) {
+  const toneData = CLAY_TONES[item.tone];
+  const soldOut = item.stock === 0;
+  return (
+    <article className={`ed-row ${reverse ? "ed-row--reverse" : ""}`}>
+      <button className="ed-row-media" style={{ background: toneData.tile }} onClick={onOpen} aria-label={`Ver ${item.name}`}>
+        {soldOut
           ? <span className="badge badge--soldout">Esgotado</span>
           : item.isNew && <span className="badge">Novo</span>}
-        <PieceVisual item={item} size={featured ? 240 : 150} />
-        <span className="cat-hint" aria-hidden="true">Ver peça</span>
+        <PieceVisual item={item} size={180} />
+        <span className="ed-row-hint" aria-hidden="true">Ver peça <ArrowUpRight size={13} /></span>
       </button>
-      <div className="cat-info">
-        <div>
-          <div className="product-name">{item.name}</div>
-          <div className="product-tone">{toneData.label}</div>
+      <div className="ed-row-body">
+        <span className="ed-index">{String(index).padStart(2, "0")}</span>
+        <span className="ed-tone-label"><span className="tone-pill-dot" style={{ background: toneData.hex }} /> {toneData.label}</span>
+        <h3 className="ed-row-name">{item.name}</h3>
+        <p className="ed-row-desc">{item.desc}</p>
+        <div className="ed-row-foot">
+          <span className="ed-price">{formatPrice(item.price)}</span>
+          <button className="ed-row-cta" onClick={onOpen}>
+            Ver peça <ArrowRight size={15} className="btn-arrow" />
+          </button>
         </div>
-        <div className="product-price">{formatPrice(item.price)}</div>
       </div>
-      {featured && <p className="cat-desc">{item.desc}</p>}
     </article>
   );
 }
@@ -174,7 +250,7 @@ function QuickView({ item, onClose }) {
         <div className="qv-body">
           <div className="qv-eyebrow">{toneData.label}{soldOut ? " · Esgotado" : item.isNew ? " · Novo" : ""}</div>
           <h2 className="qv-title" id="qv-title">{item.name}</h2>
-          <div className="qv-price">{formatPrice(item.price)} <span style={{ fontWeight: 400, fontSize: 13, color: "var(--color-faint)" }}>/ par</span></div>
+          <div className="qv-price">{formatPrice(item.price)} <span style={{ fontWeight: 400, fontSize: 13, color: "var(--color-muted)" }}>/ par</span></div>
           <p className="qv-desc">{item.desc}</p>
           <ul className="qv-meta">
             <li><Check size={14} /> Argila polimérica cozida e selada — muito leve</li>
