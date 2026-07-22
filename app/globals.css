@@ -352,7 +352,10 @@ svg {
 .qv-media {
   display: flex; align-items: center; justify-content: center;
   border-radius: var(--radius-xl) 0 0 var(--radius-xl); min-height: 420px;
+  position: relative; overflow: hidden;
 }
+/* a foto preenche só a coluna da imagem, com os cantos do modal */
+.qv-media .piece-photo { border-radius: var(--radius-xl) 0 0 var(--radius-xl); }
 .qv-body { padding: 36px 32px; display: flex; flex-direction: column; gap: 0; }
 .qv-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: var(--color-gold-dark); text-transform: uppercase; margin-bottom: 8px; }
 .qv-title { font-family: var(--font-display); font-size: 26px; font-weight: 600; margin: 0 0 6px; }
@@ -524,6 +527,7 @@ svg {
   .preview-panel { position: static; }
   .qv { grid-template-columns: 1fr; }
   .qv-media { border-radius: var(--radius-xl) var(--radius-xl) 0 0; min-height: 300px; }
+  .qv-media .piece-photo { border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
 }
 @media (max-width: 760px) {
   .grid3 { grid-template-columns: 1fr; }
