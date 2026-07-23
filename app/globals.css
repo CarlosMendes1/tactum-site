@@ -388,6 +388,18 @@ svg {
 }
 .ed-price { font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--color-ink); }
 
+/* preço com desconto — riscado discreto + pill subtil */
+.price-tag { display: inline-flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
+.price-was {
+  font-family: var(--font-sans); font-size: var(--text-sm); font-weight: 500;
+  color: var(--color-faint); text-decoration: line-through; text-decoration-thickness: 1px;
+}
+.price-off {
+  align-self: center; font-size: var(--text-2xs); font-weight: 700; letter-spacing: 0.02em;
+  color: var(--color-terracotta-dark); background: var(--color-terracotta-tint);
+  padding: 3px 8px; border-radius: 999px; white-space: nowrap;
+}
+
 /* peça em destaque — split assimétrico */
 .ed-spotlight {
   max-width: var(--max-width); margin: 0 auto; padding: 0 24px 48px;
@@ -491,7 +503,7 @@ svg {
 .qv-body { padding: 36px 32px; display: flex; flex-direction: column; gap: 0; }
 .qv-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: var(--color-gold-dark); text-transform: uppercase; margin-bottom: 8px; }
 .qv-title { font-family: var(--font-display); font-size: 26px; font-weight: 600; margin: 0 0 6px; }
-.qv-price { font-size: 17px; font-weight: 700; color: var(--color-ink-soft); margin-bottom: 14px; }
+.qv-price { font-size: 17px; font-weight: 700; color: var(--color-ink-soft); margin-bottom: 14px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; }
 .qv-desc { font-size: 14px; color: var(--color-muted); line-height: 1.65; margin: 0 0 18px; }
 .qv-meta { list-style: none; padding: 0; margin: 0 0 22px; display: flex; flex-direction: column; gap: 8px; }
 .qv-meta li { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--color-ink-soft); }

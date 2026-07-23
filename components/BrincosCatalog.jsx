@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ShoppingBag, X, Check, ArrowRight, ArrowUpRight, Plus } from "lucide-react";
-import { EARRINGS, CLAY_TONES, formatPrice } from "../lib/products";
+import { EARRINGS, CLAY_TONES, formatPrice, compareAtPrice, discountPct } from "../lib/products";
 import { useCart } from "../lib/cart";
 import PieceVisual from "./PieceVisual";
 import Reveal from "./Reveal";
@@ -123,6 +123,18 @@ export default function BrincosCatalog({ products = EARRINGS }) {
   );
 }
 
+/* Preço com "antes" riscado + desconto discreto */
+function PriceTag({ price, showPct = false }) {
+  const was = compareAtPrice(price);
+  return (
+    <span className="price-tag">
+      <span className="price-was">{formatPrice(was)}</span>
+      <span className="ed-price">{formatPrice(price)}</span>
+      {showPct && <span className="price-off">−{discountPct(price, was)}%</span>}
+    </span>
+  );
+}
+
 /* Peça em destaque — split editorial assimétrico */
 function Spotlight({ item, index, onOpen }) {
   const toneData = CLAY_TONES[item.tone];
@@ -141,7 +153,7 @@ function Spotlight({ item, index, onOpen }) {
         <h2 className="ed-spotlight-name">{item.name}</h2>
         <p className="ed-spotlight-desc">{item.desc}</p>
         <div className="ed-spotlight-foot">
-          <span className="ed-price">{formatPrice(item.price)}</span>
+          <PriceTag price={item.price} showPct />
           <button className="btn btn-charcoal" onClick={onOpen}>
             Descobrir a peça <ArrowRight size={15} className="btn-arrow" />
           </button>
@@ -170,7 +182,7 @@ function EditorialRow({ item, index, reverse, onOpen }) {
         <h3 className="ed-row-name">{item.name}</h3>
         <p className="ed-row-desc">{item.desc}</p>
         <div className="ed-row-foot">
-          <span className="ed-price">{formatPrice(item.price)}</span>
+          <PriceTag price={item.price} />
           <button className="ed-row-cta" onClick={onOpen}>
             Ver peça <ArrowRight size={15} className="btn-arrow" />
           </button>
@@ -236,7 +248,12 @@ function QuickView({ item, onClose }) {
         <div className="qv-body">
           <div className="qv-eyebrow">{toneData.label}{soldOut ? " · Esgotado" : item.isNew ? " · Novo" : ""}</div>
           <h2 className="qv-title" id="qv-title">{item.name}</h2>
-          <div className="qv-price">{formatPrice(item.price)} <span style={{ fontWeight: 400, fontSize: 13, color: "var(--color-muted)" }}>/ par</span></div>
+          <div className="qv-price">
+            <span className="price-was">{formatPrice(compareAtPrice(item.price))}</span>
+            {formatPrice(item.price)}
+            <span className="price-off">−{discountPct(item.price, compareAtPrice(item.price))}%</span>
+            <span style={{ fontWeight: 400, fontSize: 13, color: "var(--color-muted)", marginLeft: 8 }}>/ par</span>
+          </div>
           <p className="qv-desc">{item.desc}</p>
           <ul className="qv-meta">
             <li><Check size={14} /> Argila polimérica cozida e selada — muito leve</li>
