@@ -5,7 +5,7 @@ create table public.brincos (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   price numeric(8,2) not null check (price >= 0),
-  tone text not null check (tone in ('terracota','salvia','rosa','manteiga','creme','grafite')),
+  tone text not null check (tone in ('terracota','salvia','rosa','manteiga','creme','grafite','amarelo','turquesa','azeitona','coral','laranja','vermelho','magenta','multicor')),
   shape text not null check (shape in ('argola','gota','lua','botao','arco','petala','meialua','barra')),
   description text not null default '',
   image_url text,                                   -- URL da foto (Storage); vazio = usa a ilustração
