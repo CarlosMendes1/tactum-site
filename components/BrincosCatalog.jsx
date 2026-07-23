@@ -38,10 +38,6 @@ export default function BrincosCatalog({ products = EARRINGS }) {
         <h1 className="ed-intro-title">
           Brincos que se <span className="head-accent">usam como se contam</span>
         </h1>
-        <p className="ed-intro-lede">
-          Peças em argila polimérica, moldadas e cozidas uma a uma. Cada tom nasce de uma
-          receita de cor própria — escolhe o teu e descobre a peça.
-        </p>
       </section>
 
       {/* ---------- coleções por tom ---------- */}
