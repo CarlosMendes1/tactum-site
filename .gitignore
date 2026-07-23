@@ -10,3 +10,6 @@ npm-debug.log*
 # fotos originais e preparadas (vão para o Supabase Storage, não para o git)
 photos-raw
 photos-ready
+
+# SQL gerado localmente a partir das fotos (contém filenames locais)
+supabase/seed-brincos.sql
