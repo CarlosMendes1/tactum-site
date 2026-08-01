@@ -388,17 +388,7 @@ svg {
 }
 .ed-price { font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--color-ink); }
 
-/* preço com desconto — riscado discreto + pill subtil */
 .price-tag { display: inline-flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
-.price-was {
-  font-family: var(--font-sans); font-size: var(--text-sm); font-weight: 500;
-  color: var(--color-faint); text-decoration: line-through; text-decoration-thickness: 1px;
-}
-.price-off {
-  align-self: center; font-size: var(--text-2xs); font-weight: 700; letter-spacing: 0.02em;
-  color: var(--color-terracotta-dark); background: var(--color-terracotta-tint);
-  padding: 3px 8px; border-radius: 999px; white-space: nowrap;
-}
 
 /* peça em destaque — split assimétrico */
 .ed-spotlight {
@@ -574,9 +564,17 @@ svg {
 .qty-control--sm .qty-value { min-width: 14px; font-size: var(--text-sm); }
 
 .cart-foot { border-top: 1px solid var(--color-border); padding: 18px 22px 22px; flex-shrink: 0; background: var(--color-surface); }
-.cart-subtotal { display: flex; align-items: baseline; justify-content: space-between; font-size: var(--text-md); }
+.cart-subtotal { display: flex; align-items: baseline; justify-content: space-between; font-size: var(--text-md); padding-top: 8px; border-top: 1px solid var(--color-border); margin-top: 8px; }
 .cart-subtotal-value { font-family: var(--font-display); font-size: 22px; font-weight: 600; }
 .cart-foot-note { font-size: var(--text-2xs); color: var(--color-faint); margin: 6px 0 14px; }
+.cart-line { display: flex; align-items: baseline; justify-content: space-between; font-size: var(--text-sm); color: var(--color-muted); padding: 3px 0; }
+.cart-ship-nudge {
+  display: flex; align-items: center; gap: 7px; margin: 0 0 12px;
+  font-size: var(--text-2xs); font-weight: 600; color: var(--color-ink-soft);
+  background: var(--color-surface-alt); border-radius: var(--radius-sm); padding: 8px 10px;
+}
+.cart-ship-nudge svg { color: var(--color-sage); flex-shrink: 0; }
+.cart-ship-nudge.is-free { background: var(--color-sage-tint); color: var(--color-sage-dark); }
 .cart-checkout { width: 100%; flex: none; }
 
 /* ---------- cross-sell ---------- */
@@ -607,6 +605,18 @@ svg {
 }
 .success-title { font-family: var(--font-display); font-size: 24px; font-weight: 600; margin: 0 0 10px; }
 .success-text { font-size: var(--text-base); color: var(--color-muted); line-height: 1.65; margin: 0 0 24px; }
+.success-ship {
+  background: var(--color-surface-alt); border-radius: var(--radius-md);
+  padding: 14px 16px; margin: 0 0 24px; text-align: left;
+}
+.success-ship-label {
+  display: block; font-size: var(--text-2xs); font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--color-faint); margin-bottom: 6px;
+}
+.success-ship-address {
+  display: flex; flex-direction: column; gap: 2px;
+  font-style: normal; font-size: var(--text-sm); color: var(--color-ink-soft); line-height: 1.5;
+}
 
 /* ---------- customizador pets ---------- */
 

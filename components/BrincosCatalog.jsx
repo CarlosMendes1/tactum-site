@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ShoppingBag, X, Check, ArrowRight, ArrowUpRight, Plus } from "lucide-react";
-import { EARRINGS, CLAY_TONES, formatPrice, compareAtPrice, discountPct } from "../lib/products";
+import { EARRINGS, CLAY_TONES, formatPrice } from "../lib/products";
+import { SHIPPING_FLAT_CENTS, FREE_SHIPPING_THRESHOLD_CENTS } from "../lib/shipping";
 import { useCart } from "../lib/cart";
 import PieceVisual from "./PieceVisual";
 import Reveal from "./Reveal";
@@ -123,14 +124,10 @@ export default function BrincosCatalog({ products = EARRINGS }) {
   );
 }
 
-/* Preço com "antes" riscado + desconto discreto */
-function PriceTag({ price, showPct = false }) {
-  const was = compareAtPrice(price);
+function PriceTag({ price }) {
   return (
     <span className="price-tag">
-      <span className="price-was">{formatPrice(was)}</span>
       <span className="ed-price">{formatPrice(price)}</span>
-      {showPct && <span className="price-off">−{discountPct(price, was)}%</span>}
     </span>
   );
 }
@@ -153,7 +150,7 @@ function Spotlight({ item, index, onOpen }) {
         <h2 className="ed-spotlight-name">{item.name}</h2>
         <p className="ed-spotlight-desc">{item.desc}</p>
         <div className="ed-spotlight-foot">
-          <PriceTag price={item.price} showPct />
+          <PriceTag price={item.price} />
           <button className="btn btn-charcoal" onClick={onOpen}>
             Descobrir a peça <ArrowRight size={15} className="btn-arrow" />
           </button>
@@ -249,9 +246,7 @@ function QuickView({ item, onClose }) {
           <div className="qv-eyebrow">{toneData.label}{soldOut ? " · Esgotado" : item.isNew ? " · Novo" : ""}</div>
           <h2 className="qv-title" id="qv-title">{item.name}</h2>
           <div className="qv-price">
-            <span className="price-was">{formatPrice(compareAtPrice(item.price))}</span>
             {formatPrice(item.price)}
-            <span className="price-off">−{discountPct(item.price, compareAtPrice(item.price))}%</span>
             <span style={{ fontWeight: 400, fontSize: 13, color: "var(--color-muted)", marginLeft: 8 }}>/ par</span>
           </div>
           <p className="qv-desc">{item.desc}</p>
@@ -271,7 +266,10 @@ function QuickView({ item, onClose }) {
               {soldOut ? "Esgotado" : `Adicionar — ${formatPrice(item.price * qty)}`}
             </button>
           </div>
-          <p className="qv-note">Envio em 3–5 dias úteis. Pagamento seguro via Stripe no carrinho.</p>
+          <p className="qv-note">
+            Portes {formatPrice(SHIPPING_FLAT_CENTS / 100)} para Portugal, grátis acima de{" "}
+            {formatPrice(FREE_SHIPPING_THRESHOLD_CENTS / 100)}. Envio em 3–5 dias úteis.
+          </p>
         </div>
       </div>
     </div>
