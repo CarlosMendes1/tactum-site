@@ -111,8 +111,13 @@ export function Footer() {
         </nav>
         <div className="footer-col">
           <h3 className="footer-heading">Contacto</h3>
-          <a href="https://instagram.com" className="footer-link" target="_blank" rel="noreferrer">
-            <Instagram size={15} /> Instagram
+          <a
+            href="https://www.instagram.com/the.tactum.studio/"
+            className="footer-link"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Instagram size={15} /> @the.tactum.studio
           </a>
           <a href="mailto:ola@tactumstudio.pt" className="footer-link">
             <Mail size={15} /> ola@tactumstudio.pt
