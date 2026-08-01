@@ -9,15 +9,21 @@ import PieceVisual from "./PieceVisual";
 import Reveal from "./Reveal";
 
 const SORTS = [
-  { id: "novidades", label: "Novidades" },
-  { id: "preco-asc", label: "Preço ↑" },
-  { id: "preco-desc", label: "Preço ↓" },
+  { id: "novidades", label: "Novidades", hint: "Mostrar primeiro as peças novas" },
+  { id: "preco-asc", label: "Preço ↑", hint: "Ordenar do mais barato para o mais caro" },
+  { id: "preco-desc", label: "Preço ↓", hint: "Ordenar do mais caro para o mais barato" },
 ];
 
 export default function BrincosCatalog({ products = EARRINGS }) {
   const [tone, setTone] = useState("todos");
   const [sort, setSort] = useState("novidades");
   const [selected, setSelected] = useState(null);
+  const { hydrated, syncWithCatalog } = useCart();
+
+  // Alinha o carrinho guardado com a coleção atual (preços, stock, peças retiradas).
+  useEffect(() => {
+    if (hydrated) syncWithCatalog(products);
+  }, [hydrated, products, syncWithCatalog]);
 
   const usedTones = useMemo(() => [...new Set(products.map((e) => e.tone))], [products]);
 
@@ -69,6 +75,8 @@ export default function BrincosCatalog({ products = EARRINGS }) {
               key={s.id}
               className={`ed-sort-btn ${sort === s.id ? "active" : ""}`}
               aria-pressed={sort === s.id}
+              aria-label={s.hint}
+              title={s.hint}
               onClick={() => setSort(s.id)}
             >
               {s.label}

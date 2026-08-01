@@ -603,6 +603,7 @@ svg {
   width: 60px; height: 60px; border-radius: 50%; background: var(--color-sage);
   display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
 }
+.success-icon--muted { background: var(--color-faint); }
 .success-title { font-family: var(--font-display); font-size: 24px; font-weight: 600; margin: 0 0 10px; }
 .success-text { font-size: var(--text-base); color: var(--color-muted); line-height: 1.65; margin: 0 0 24px; }
 .success-ship {

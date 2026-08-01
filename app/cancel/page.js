@@ -1,22 +1,24 @@
 import Link from "next/link";
+import { ArrowRight, ShoppingBag } from "lucide-react";
 
 export const metadata = { title: "Pagamento cancelado — tactum studio" };
 
 export default function CancelPage() {
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#F3EEE2", fontFamily: "'Trebuchet MS','Segoe UI',sans-serif", color: "#2E2B26", padding: 24 }}>
-      <div style={{ maxWidth: 440, textAlign: "center", background: "#F7F2E7", borderRadius: 20, padding: "40px 32px", boxShadow: "inset 0 0 0 1px #DFD6C1" }}>
-        <h1 style={{ fontFamily: "Georgia,serif", fontSize: 24, margin: "0 0 12px" }}>Pagamento cancelado</h1>
-        <p style={{ fontSize: 14, color: "#6B675C", lineHeight: 1.6, margin: "0 0 24px" }}>
-          Não te preocupes, não foi cobrado nada. Podes voltar ao site e tentar novamente quando quiseres.
+    <section className="section-narrow">
+      <div className="success-card">
+        <div className="success-icon success-icon--muted">
+          <ShoppingBag size={26} color="var(--color-surface)" />
+        </div>
+        <h1 className="success-title">Pagamento cancelado</h1>
+        <p className="success-text">
+          Não foi cobrado nada e o teu carrinho ficou como estava. Podes retomar a compra
+          quando quiseres.
         </p>
-        <Link
-          href="/"
-          style={{ display: "inline-block", border: "1.5px solid #5C6B4A", color: "#5C6B4A", borderRadius: 10, padding: "10px 20px", fontSize: 13, fontWeight: 700, textDecoration: "none" }}
-        >
-          Voltar ao site
+        <Link href="/brincos" className="btn btn-primary-sage" style={{ flex: "0 0 auto" }}>
+          Voltar ao catálogo <ArrowRight size={15} className="btn-arrow" />
         </Link>
       </div>
-    </div>
+    </section>
   );
 }

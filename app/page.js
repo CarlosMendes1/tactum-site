@@ -42,7 +42,7 @@ export default async function Home() {
               Ver catálogo <ArrowRight size={15} className="btn-arrow" />
             </Link>
             <Link href="/pets" className="btn btn-ghost-dark btn-lg">
-              Ver área Pets
+              Chapinhas para pets
             </Link>
           </div>
         </div>
@@ -100,12 +100,12 @@ export default async function Home() {
             <div className="cross-sell-info">
               <div className="cross-sell-icon"><PawPrint size={22} /></div>
               <div>
-                <div className="cross-sell-title">Também fazemos chapinhas para colares</div>
+                <div className="cross-sell-title">Em breve: chapinhas para colares</div>
                 <div className="cross-sell-desc">A mesma argila polimérica, agora para o teu animal.</div>
               </div>
             </div>
             <Link href="/pets" className="btn btn-outline-sage">
-              Ver área Pets <ArrowRight size={15} className="btn-arrow" />
+              Saber mais <ArrowRight size={15} className="btn-arrow" />
             </Link>
           </div>
         </section>

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "../../../lib/stripe";
 import { getEarrings } from "../../../lib/earrings";
-import { CLAY_TONES } from "../../../lib/products";
+import { CLAY_TONES, MAX_QTY_PER_ITEM } from "../../../lib/products";
 import {
   SHIPPING_FLAT_CENTS,
   SHIPPING_COUNTRIES,
@@ -20,7 +20,7 @@ function isValidRequest(item) {
     item.id.trim().length > 0 &&
     Number.isInteger(item.quantity) &&
     item.quantity > 0 &&
-    item.quantity <= 20
+    item.quantity <= MAX_QTY_PER_ITEM
   );
 }
 
@@ -68,7 +68,11 @@ export async function POST(request) {
     0
   );
   const freeShipping = qualifiesForFreeShipping(subtotal);
-  const origin = request.nextUrl.origin;
+
+  // O `Host` do pedido pode ser forjado, e ia parar aos URLs de retorno do Stripe
+  // (alguém podia fazer o cliente aterrar noutro site depois de pagar). Em produção
+  // manda o domínio configurado; o pedido só serve de recurso em desenvolvimento.
+  const origin = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || request.nextUrl.origin;
 
   try {
     const session = await getStripe().checkout.sessions.create({
