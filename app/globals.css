@@ -695,14 +695,8 @@ svg {
   margin-top: 40px; background: var(--color-charcoal); color: var(--color-bg);
   overflow: hidden;
 }
-.footer-word {
-  font-family: var(--font-display); font-style: italic; font-weight: 500;
-  font-size: clamp(56px, 11vw, 150px); line-height: 1; text-align: center;
-  color: rgba(247,242,231,0.07); user-select: none; pointer-events: none;
-  padding: 34px 0 0; white-space: nowrap;
-}
 .footer-inner {
-  max-width: var(--max-width); margin: 0 auto; padding: 20px 24px 36px;
+  max-width: var(--max-width); margin: 0 auto; padding: 44px 24px 36px;
   display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px;
 }
 .footer-heading {

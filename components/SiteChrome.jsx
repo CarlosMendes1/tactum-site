@@ -93,7 +93,6 @@ export function MaterialStrip() {
 export function Footer() {
   return (
     <footer className="site-footer">
-      <div className="footer-word" aria-hidden="true">tactum studio</div>
       <div className="footer-inner">
         <div className="footer-brand">
           <div className="footer-brand-row">
