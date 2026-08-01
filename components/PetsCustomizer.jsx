@@ -113,6 +113,13 @@ export default function PetsCustomizer() {
 
   const price = unitPrice * qty;
 
+  // ⚠️ Esta área está desativada (ver app/pets/page.js) e este caminho de pagamento
+  // JÁ NÃO FUNCIONA: /api/checkout deixou de aceitar preços vindos do cliente e passou
+  // a resolvê-los no servidor a partir do `id` da peça.
+  //
+  // Para reativar os Pets é preciso, antes de mais, dar à rota uma forma de recalcular
+  // o preço da chapinha no servidor a partir da forma/tamanho/contacto escolhidos —
+  // caso contrário qualquer pessoa poderia escolher quanto paga.
   const handleBuy = async () => {
     if (!nameValid) {
       setShowNameError(true);
