@@ -98,7 +98,10 @@ export default function BrincosCatalog({ products = EARRINGS }) {
                   <EditorialRow
                     item={item}
                     index={i + 2}
-                    reverse={i % 2 === 1}
+                    // A peça em destaque tem a imagem à esquerda, por isso a
+                    // primeira linha arranca invertida — o zigue-zague nunca
+                    // repete o mesmo lado duas vezes seguidas.
+                    reverse={i % 2 === 0}
                     onOpen={() => setSelected(item)}
                   />
                 </Reveal>
