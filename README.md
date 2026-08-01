@@ -71,16 +71,35 @@ npm run dev
 Abre o browser em **http://localhost:3000** — deves ver o site com o toggle "BRINCOS / PETS" no topo, e o customizador completo dentro da área Pets.
 
 ### 7. Testar o pagamento (Stripe modo teste)
-1. Clica em "Comprar" num brinco, ou personaliza uma chapinha em Pets e clica "Encomendar"
-2. Vais ser redirecionado para uma página seria do Stripe (checkout.stripe.com)
+1. Adiciona peças ao carrinho e clica "Finalizar compra"
+2. Vais ser redirecionado para uma página segura do Stripe (checkout.stripe.com)
 3. Usa um cartão de teste, por exemplo:
    - Número: `4242 4242 4242 4242`
    - Validade: qualquer data futura (ex: `12/34`)
    - CVC: qualquer 3 dígitos (ex: `123`)
-   - Nome/código postal: qualquer valor
-4. Depois de pagar, és redirecionado de volta para `/success`. Se cancelares, vais para `/cancel`.
+   - Morada de envio e NIF: qualquer valor válido
+4. Depois de pagar, és redirecionado de volta para `/success`, que mostra a morada de envio. Se cancelares, vais para `/cancel`.
 
 Nenhum dinheiro real é movimentado em modo de teste.
+
+## Portes de envio
+
+Toda a regra de portes vive em [`lib/shipping.js`](lib/shipping.js) — é o único ficheiro a alterar se os preços mudarem, e tanto o carrinho como o checkout leem de lá.
+
+| | Valor |
+|---|---|
+| Taxa fixa | 3,50 € |
+| Portes grátis a partir de | 35,00 € |
+| Países | Portugal (`SHIPPING_COUNTRIES`) |
+| Prazo | 3–5 dias úteis |
+
+A taxa cobre o correio registado dos CTT, que no tarifário de 2026 custa 3,20 € em entrega na caixa de correio e 3,75 € ao balcão para envios até 20 g. O limiar de 35 € (cerca de três peças) segue o que fazem lojas portuguesas comparáveis de brincos em argila polimérica.
+
+Para passar a enviar para Espanha ou para o resto da UE, acrescenta o código do país a `SHIPPING_COUNTRIES` — mas define primeiro um porte próprio, porque o registado internacional é bastante mais caro que o nacional.
+
+### Nota sobre preços riscados
+
+O catálogo mostrava um preço "antes" riscado que era **calculado por fórmula** (sempre 25% acima do preço atual), não um preço real anterior. Foi removido: a Diretiva Omnibus obriga a que qualquer anúncio de redução mostre o preço mais baixo praticado nos 30 dias anteriores, e as coimas vão de 2 500 € a 50 000 €. Se quiseres voltar a fazer promoções, guarda na tabela `brincos` o preço real a que a peça esteve à venda e mostra esse.
 
 ### 8. Testar o build de produção (opcional, mas recomendado antes de publicar)
 ```bash

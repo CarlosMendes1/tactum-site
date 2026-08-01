@@ -1,10 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { X, ShoppingBag, Loader2, Trash2, Lock } from "lucide-react";
+import { X, ShoppingBag, Loader2, Trash2, Lock, Truck } from "lucide-react";
 import { CLAY_TONES, formatPrice } from "../lib/products";
 import { goToCheckout } from "../lib/checkout";
 import { useCart } from "../lib/cart";
+import {
+  SHIPPING_FLAT_CENTS,
+  qualifiesForFreeShipping,
+  amountToFreeShipping,
+} from "../lib/shipping";
 import PieceVisual from "./PieceVisual";
 
 export default function CartDrawer() {
@@ -12,6 +17,12 @@ export default function CartDrawer() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const panelRef = useRef(null);
+
+  const subtotalCents = Math.round(subtotal * 100);
+  const freeShipping = qualifiesForFreeShipping(subtotalCents);
+  const shippingCost = freeShipping ? 0 : SHIPPING_FLAT_CENTS / 100;
+  const missingForFree = amountToFreeShipping(subtotalCents) / 100;
+  const total = subtotal + shippingCost;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -46,13 +57,9 @@ export default function CartDrawer() {
   const handleCheckout = async () => {
     if (items.length === 0) return;
     setLoading(true);
+    // Só o id e a quantidade — o preço é resolvido no servidor.
     await goToCheckout(
-      items.map((it) => ({
-        name: it.name,
-        description: `Brincos em argila polimérica (par) — tom ${CLAY_TONES[it.tone]?.label ?? it.tone}`,
-        unitAmount: Math.round(it.price * 100),
-        quantity: it.qty,
-      })),
+      items.map((it) => ({ id: it.id, quantity: it.qty })),
       setError
     );
     setLoading(false);
@@ -123,15 +130,34 @@ export default function CartDrawer() {
             </ul>
 
             <footer className="cart-foot">
-              <div className="cart-subtotal">
+              {freeShipping ? (
+                <p className="cart-ship-nudge is-free">
+                  <Truck size={14} /> Tens portes grátis nesta encomenda.
+                </p>
+              ) : (
+                <p className="cart-ship-nudge">
+                  <Truck size={14} /> Faltam {formatPrice(missingForFree)} para portes grátis.
+                </p>
+              )}
+              <div className="cart-line">
                 <span>Subtotal</span>
-                <span className="cart-subtotal-value">{formatPrice(subtotal)}</span>
+                <span>{formatPrice(subtotal)}</span>
               </div>
-              <p className="cart-foot-note">Portes calculados no pagamento · envio em 3–5 dias úteis.</p>
+              <div className="cart-line">
+                <span>Portes (correio registado)</span>
+                <span>{freeShipping ? "Grátis" : formatPrice(shippingCost)}</span>
+              </div>
+              <div className="cart-subtotal">
+                <span>Total</span>
+                <span className="cart-subtotal-value">{formatPrice(total)}</span>
+              </div>
+              <p className="cart-foot-note">
+                Envio para Portugal em 3–5 dias úteis. IVA incluído.
+              </p>
               {error && <div className="field-help error" role="status">{error}</div>}
               <button className="btn btn-primary-sage cart-checkout" onClick={handleCheckout} disabled={loading}>
                 {loading ? <Loader2 size={16} className="spin" /> : <Lock size={15} />}
-                {loading ? "A abrir pagamento..." : `Finalizar compra — ${formatPrice(subtotal)}`}
+                {loading ? "A abrir pagamento..." : `Finalizar compra — ${formatPrice(total)}`}
               </button>
             </footer>
           </>
